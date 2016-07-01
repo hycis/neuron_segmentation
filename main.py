@@ -56,12 +56,7 @@ threshold = 0.5
 
 img_augment = False
 
-hname = socket.gethostname().lower()
-if 'hycis' in hname:
-    PROJ_DIR = '/Volumes/Storage/IHPC/skin_segment'
-else:
-    PROJ_DIR = '/home/wuzz/skin_segment'
-
+PROJ_DIR = os.path.dirname(os.path.realpath(__file__))
 DATASET_DIR = PROJ_DIR + '/Skin'
 
 verbose = True
