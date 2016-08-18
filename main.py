@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 from mozi.layers.activation import *
 from mozi.layers.normalization import *
@@ -16,6 +17,8 @@ from mozi.train_object import TrainObject
 import mozi.datasets.preprocessor as proc
 from mozi.datasets.mnist import Mnist
 from mozi.datasets.cifar10 import Cifar10
+
+import argparse
 import cPickle
 import os
 import sys
@@ -57,7 +60,7 @@ threshold = 0.5
 img_augment = False
 
 PROJ_DIR = os.path.dirname(os.path.realpath(__file__))
-DATASET_DIR = PROJ_DIR + '/Skin'
+
 
 verbose = True
 gamma = 0.1
@@ -75,8 +78,8 @@ train_cost = mse
 train_cost = smoothiou
 
 
-def make_Xy(img_augment=False):
-    images = glob.glob(DATASET_DIR + '/Image/*jpg')
+def make_Xy(args, img_augment=False):
+    images = glob.glob(args.input_dir + '/Image/*.' + args.extension)
     X = []
     y = []
     c, h, w = _IMG_INPUT_DIM_
@@ -86,11 +89,12 @@ def make_Xy(img_augment=False):
         imgx = cv2.imread(imgpath)
 
         ddir = os.path.dirname(imgpath)
-        fname = os.path.basename(imgpath)
-        fname = fname.rstrip('.jpg')
         ddir = os.path.dirname(ddir)
         lbldir = ddir + '/Label'
-        lblpath = lbldir + '/' + fname + '_Segmentation.png'
+        fname = os.path.basename(imgpath)
+        fname = fname.rstrip('.' + args.extension)
+
+        lblpath = lbldir + '/' + args.label_pattern.replace('%', fname)
         imgy = cv2.imread(lblpath)
 
         imgx = cv2.resize(imgx, (w,h))
@@ -185,13 +189,13 @@ class Tanh5(Template):
     def _train_fprop(self, state_below):
         return 5 * T.tanh(state_below)
 
-def train():
+def train(args):
     # build dataset
 
     xpath = os.environ['MOZI_DATA_PATH'] + '/X_{}_augment_{}.npy'.format('_'.join([str(d) for d in _IMG_INPUT_DIM_]), str(img_augment))
     ypath = os.environ['MOZI_DATA_PATH'] + '/y_{}_augment_{}.npy'.format('_'.join([str(d) for d in _IMG_INPUT_DIM_]), str(img_augment))
     if not os.path.exists(xpath) or not os.path.exists(ypath):
-        X, y = make_Xy(img_augment)
+        X, y = make_Xy(args, img_augment)
         with open(xpath, 'wb') as fout:
             np.save(fout, X)
             print '..saved to', xpath
@@ -303,13 +307,18 @@ def generate_mask(model):
 
 if __name__ == '__main__':
     setenv()
+    parser = argparse.ArgumentParser(description='GB.')
+    parser.add_argument("--input_dir", help="e.g. kaggle", default="Skin")
+    parser.add_argument("--label_pattern", help="e.g. %_mask.tif", default="%_Segmentation.png")
+    parser.add_argument("--extension", help="e.g. tif", default="jpg")
+    parser.add_argument('-t', action='store_true', default=False)
+    parser.add_argument('-g', required=False, default='')
+    args = parser.parse_args()
 
-    if len(sys.argv) == 1:
-        print 'provide arg -t (train) or -g (generate mask from model)'
-    elif sys.argv[1] == '-t':
-        train()
-    elif sys.argv[1] == '-g':
+    if args.t:
+        train(args)
+    elif args.g:
         print 'model imgpath as args '
-        generate_mask(model=sys.argv[2])
+        generate_mask(model=args.g)
     else:
         print 'provide arg -t (train) or -g (generate) or -gt (generate_test)'
