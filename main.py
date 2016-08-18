@@ -92,7 +92,7 @@ def make_Xy(args, img_augment=False):
         ddir = os.path.dirname(ddir)
         lbldir = ddir + '/Label'
         fname = os.path.basename(imgpath)
-        fname = fname.rstrip('.' + args.extension)
+        fname = fname.replace('.' + args.extension, '')
 
         lblpath = lbldir + '/' + args.label_pattern.replace('%', fname)
         imgy = cv2.imread(lblpath)
