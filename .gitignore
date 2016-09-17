@@ -1,6 +1,7 @@
 *.pyc
 
 /data/
+/data_img/
 /database/
 /save/
 /Skin/
