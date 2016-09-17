@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 
 import os
 import sys
@@ -9,8 +10,15 @@ import pandas
 
 from mozi.utils.utils import gpu_to_cpu_model
 
+from bson.objectid import ObjectId
+
 
 class Tester(object):
+    def __init__(self, db, task_id):
+        self.db = db
+        self.task_id = task_id
+        self.model = None
+
     def load_model(self, model_file_path, convert_to_cpu):
 
         with open(model_file_path, 'rb') as fin:
@@ -19,12 +27,16 @@ class Tester(object):
         if convert_to_cpu:
             mod = gpu_to_cpu_model(mod)
 
-        return mod
+        self.model = mod
 
 
-    def generate_mask(self, mod, image_dims, input_images_path, output_images_path):
+    def generate_mask(self, image_dims, input_images_path, output_images_path):
+        mod = self.model
+        db = self.db
+        task_id = self.task_id
 
         c, h, w = image_dims
+        processedCount = 0
 
         for filename in os.listdir(input_images_path):
             basename, file_extension = os.path.splitext(filename)
@@ -32,6 +44,7 @@ class Tester(object):
             if file_extension not in ('.jpg', '.jpeg', '.tif', '.tiff', '.png'):
                 continue
             print("{}".format(filename))
+
             file_path = os.path.join(input_images_path, filename)
             img = cv2.imread(file_path)
             img = cv2.resize(img, (w,h))
@@ -41,3 +54,20 @@ class Tester(object):
 
             out_file_path = os.path.join(output_images_path, basename + '.png')
             cv2.imwrite(out_file_path, np.rollaxis(mask[0], 0, 3) * 255.0)
+
+            processedCount = processedCount + 1
+            result = db.tasks.update_one({
+                '_id': ObjectId(task_id),
+            }, {
+                '$set': {
+                    'processedImageCount': processedCount,
+                },
+            })
+
+        result = db.tasks.update_one({
+            '_id': ObjectId(task_id),
+        }, {
+            '$currentDate': {
+                'endedAt': True,
+            },
+        })
