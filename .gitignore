@@ -1,6 +1,29 @@
-*pyc
-data/
-database/
-save/
-Skin/
-kaggle/
+*.pyc
+
+/data/
+/database/
+/save/
+/Skin/
+/kaggle/
+/kaggle_output/
+/kaggle2/
+
+### *nix OS / apps
+
+*.swp
+*~
+
+### Mac OS generated
+
+__MACOSX
+*.DS_Store
+*.DS_Store?
+._*
+.Spotlight*
+.Trashes
+
+### Windows generated
+
+ehthumbs.db
+thumbs.db
+Thumbs.db
