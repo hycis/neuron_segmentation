@@ -11,6 +11,7 @@ def train():
 
     batchsize = 64
     learning_rate = 0.001
+    max_epoch = 10
 
     X_train = np.random.rand(1000, 32, 32, 3)
     M_train = np.random.rand(1000, 32, 32, 1)
@@ -51,21 +52,23 @@ def train():
     train_mse = tf.reduce_mean((M_ph - M_train_s)**2)
     valid_mse = tf.reduce_mean((M_ph - M_valid_s)**2)
 
-    data_train = tg.SequentialIterator(X_train, M_train, batchsize=64)
-    data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=64)
+    data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
+    data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
 
     optimizer = tf.train.AdamOptimizer(learning_rate).minimize(train_mse)
 
     with tf.Session() as sess:
         init = tf.initialize_all_variables()
         sess.run(init)
-        print '..training'
-        for X_batch, M_batch in data_train:
-            sess.run(optimizer, feed_dict={X_ph:X_batch, M_ph:M_batch})
+        for epoch in range(max_epoch):
+            print 'epoch:', epoch
+            print '..training'
+            for X_batch, M_batch in data_train:
+                sess.run(optimizer, feed_dict={X_ph:X_batch, M_ph:M_batch})
 
-        print '..validating'
-        valid_mse_score = sess.run(valid_mse, feed_dict={X_ph:X_valid, M_ph:M_valid})
-        print 'valid mse score:', valid_mse_score
+            print '..validating'
+            valid_mse_score = sess.run(valid_mse, feed_dict={X_ph:X_valid, M_ph:M_valid})
+            print 'valid mse score:', valid_mse_score
 
 
 if __name__ == '__main__':
