@@ -6,7 +6,6 @@ import sys
 import cv2
 import numpy as np
 import cPickle
-import pandas
 
 from mozi.utils.utils import gpu_to_cpu_model
 
@@ -37,6 +36,14 @@ class Tester(object):
 
         c, h, w = image_dims
         processedCount = 0
+
+        result = db.tasks.update_one({
+            '_id': ObjectId(task_id),
+        }, {
+            '$currentDate': {
+                'startedAt': True,
+            },
+        })
 
         for filename in os.listdir(input_images_path):
             basename, file_extension = os.path.splitext(filename)

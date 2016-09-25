@@ -27,7 +27,6 @@ import argparse
 import cPickle
 import os
 import sys
-import pandas
 import cv2
 from cost import *
 
