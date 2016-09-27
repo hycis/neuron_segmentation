@@ -28,19 +28,6 @@ def train():
     h, w = 32, 32
 
     model = tg.Sequential()
-    # model.add(Conv3D(input_channels=1, num_filters=8, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
-    # h1, w1 = same(h, w, kernel_size=(5,5), stride=(2,2))
-    # model.add(RELU())
-    # model.add(Conv2D(input_channels=8, num_filters=16, kernel_size=(5,5), stride=(2,2), padding='SAME'))
-    # h2, w2 = same(h1, w1, kernel_size=(5,5), stride=(2,2))
-    # model.add(RELU())
-    # model.add(Conv2D_Transpose(input_channels=16, num_filters=8, output_shape=(h1,w1),
-    #                            kernel_size=(5,5), stride=(2,2), padding='SAME'))
-    # model.add(RELU())
-    # model.add(Conv2D_Transpose(input_channels=8, num_filters=1, output_shape=(h,w),
-    #                            kernel_size=(5,5), stride=(2,2), padding='SAME'))
-    # model.add(RELU())
-
     iter_model = tg.Sequential()
     iter_model.add(Conv3D(input_channels=1, num_filters=8, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
     iter_model.add(RELU())
