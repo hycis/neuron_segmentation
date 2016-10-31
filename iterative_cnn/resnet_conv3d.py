@@ -44,13 +44,15 @@ def train():
     batchsize = 64
     learning_rate = 0.001
     max_epoch = 10
+    epoch_look_back = 3
+    percent_decrease = 0.01
 
     # batch x depth x height x width x channel
-    X_train = np.random.rand(1000, 20, 32, 32, 1)
-    M_train = np.random.rand(1000, 20, 32, 32, 1)
+    X_train = np.random.rand(100, 20, 32, 32, 1)
+    M_train = np.random.rand(100, 20, 32, 32, 1)
 
-    X_valid = np.random.rand(1000, 20, 32, 32, 1)
-    M_valid = np.random.rand(1000, 20, 32, 32, 1)
+    X_valid = np.random.rand(100, 20, 32, 32, 1)
+    M_valid = np.random.rand(100, 20, 32, 32, 1)
 
 
     X_ph = tf.placeholder('float32', [None, 20, 32, 32, 1])
@@ -59,7 +61,7 @@ def train():
     h, w = 32, 32
 
     model = tg.Sequential()
-    model.add(ResNet(num_blocks=10))
+    model.add(ResNet(num_blocks=1))
     model.add(Sigmoid())
 
 
@@ -77,20 +79,49 @@ def train():
     with tf.Session() as sess:
         init = tf.initialize_all_variables()
         sess.run(init)
+        es = tg.EarlyStopper(max_epoch=max_epoch,
+                             epoch_look_back=epoch_look_back,
+                             percent_decrease=percent_decrease)
         for epoch in range(max_epoch):
             print 'epoch:', epoch
             print '..training'
             pbar = ProgressBar(len(data_train))
             n_exp = 0
+            train_mse_score = 0
             for X_batch, M_batch in data_train:
-                pbar.update(n_exp)
-                sess.run(optimizer, feed_dict={X_ph:X_batch, M_ph:M_batch})
+                feed_dict={X_ph:X_batch, M_ph:M_batch}
+                sess.run(optimizer, feed_dict=feed_dict)
+                train_mse_score += sess.run(train_mse, feed_dict=feed_dict) * len(X_batch)
                 n_exp += len(X_batch)
+                pbar.update(n_exp)
+            train_mse_score /= n_exp
+            print 'mean train mse:', train_mse_score
 
 
             print '..validating'
-            valid_mse_score = sess.run(valid_mse, feed_dict={X_ph:X_valid, M_ph:M_valid})
-            print 'valid mse score:', valid_mse_score
+            pbar = ProgressBar(len(data_valid))
+            n_exp = 0
+            valid_mse_score = 0
+            for X_batch, M_batch in data_valid:
+                feed_dict={X_ph:X_batch, M_ph:M_batch}
+                sess.run(optimizer, feed_dict=feed_dict)
+                valid_mse_score += sess.run(valid_mse, feed_dict=feed_dict) * len(X_batch)
+                n_exp += len(X_batch)
+                pbar.update(n_exp)
+            valid_mse_score /= n_exp
+            print 'mean valid mse:', valid_mse_score
+
+            if es.continue_learning(valid_error=valid_mse_score):
+                print 'epoch', epoch
+                print 'valid error so far:', mean_valid_cost
+                print 'best epoch last update:', es.best_epoch_last_update
+                print 'best valid last update:', es.best_valid_last_update
+
+            else:
+                print 'training done!'
+                break
+
+
 
 
 if __name__ == '__main__':
