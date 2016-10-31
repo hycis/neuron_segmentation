@@ -48,11 +48,11 @@ def train():
     percent_decrease = 0.01
 
     # batch x depth x height x width x channel
-    X_train = np.random.rand(100, 20, 32, 32, 1)
-    M_train = np.random.rand(100, 20, 32, 32, 1)
+    X_train = np.random.rand(1000, 20, 32, 32, 1)
+    M_train = np.random.rand(1000, 20, 32, 32, 1)
 
-    X_valid = np.random.rand(100, 20, 32, 32, 1)
-    M_valid = np.random.rand(100, 20, 32, 32, 1)
+    X_valid = np.random.rand(1000, 20, 32, 32, 1)
+    M_valid = np.random.rand(1000, 20, 32, 32, 1)
 
 
     X_ph = tf.placeholder('float32', [None, 20, 32, 32, 1])
