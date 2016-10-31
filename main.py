@@ -308,7 +308,7 @@ def generate_mask(model):
 if __name__ == '__main__':
     setenv()
     parser = argparse.ArgumentParser(description='GB.')
-    parser.add_argument("--input_dir", help="e.g. kaggle", default="Skin")
+    parser.add_argument("--input_dir", help="e.g. kaggle", default="data/skin")
     parser.add_argument("--label_pattern", help="e.g. %_mask.tif", default="%_Segmentation.png")
     parser.add_argument("--extension", help="e.g. tif", default="jpg")
     parser.add_argument('-t', action='store_true', default=False)

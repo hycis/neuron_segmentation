@@ -1,13 +1,9 @@
 *.pyc
 
 /data/
-/data_img/
-/database/
 /save/
-/Skin/
-/kaggle/
-/kaggle_output/
-/kaggle2/
+/database/
+/output/
 
 ### *nix OS / apps
 

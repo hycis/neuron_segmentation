@@ -59,7 +59,7 @@ def main(args):
 
     tester = Tester(db, args.task_id)
     tester.load_model(args.model_file_path, args.model_to_cpu)
-    tester.generate_mask(image_dims, args.input_images_path, args.output_images_path)
+    tester.generate_mask(image_dims, args.input_images_path, args.output_processed_path, args.output_masks_path)
 
 
 if __name__ == '__main__':
@@ -67,7 +67,8 @@ if __name__ == '__main__':
     parser.add_argument("--model_file_path", required=True)
     parser.add_argument("--model_to_cpu", action="store_true")
     parser.add_argument("--input_images_path", required=True)
-    parser.add_argument("--output_images_path", required=True)
+    parser.add_argument("--output_processed_path", required=True)
+    parser.add_argument("--output_masks_path", required=True)
     parser.add_argument("--task_id", required=True)
     args = parser.parse_args()
 
