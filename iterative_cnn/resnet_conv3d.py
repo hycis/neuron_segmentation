@@ -113,7 +113,7 @@ def train():
 
             if es.continue_learning(valid_error=valid_mse_score):
                 print 'epoch', epoch
-                print 'valid error so far:', mean_valid_cost
+                print 'valid error so far:', valid_mse_score
                 print 'best epoch last update:', es.best_epoch_last_update
                 print 'best valid last update:', es.best_valid_last_update
 
