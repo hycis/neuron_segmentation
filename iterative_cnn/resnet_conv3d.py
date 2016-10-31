@@ -1,0 +1,97 @@
+
+import tensorgraph as tg
+from tensorgraph.layers import Conv3D, RELU, Sigmoid, Template
+from tensorgraph.utils import valid, same
+from tensorgraph import ProgressBar
+import tensorflow as tf
+import numpy as np
+
+
+class ResNet(Template):
+
+    def __init__(self, num_blocks):
+        self.num_blocks = num_blocks
+        self.blocks = []
+        for _ in range(self.num_blocks):
+            layers = []
+            layers.append(Conv3D(input_channels=1, num_filters=8, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
+            layers.append(RELU())
+            layers.append(Conv3D(input_channels=8, num_filters=1, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
+            layers.append(RELU())
+            self.blocks.append(layers)
+
+
+    def _train_fprop(self, state_below):
+        for block in self.blocks:
+            out = state_below
+            for layer in block:
+                out = layer._train_fprop(out)
+            state_below = out + state_below
+        return out
+
+
+    def _test_fprop(self, state_below):
+        for block in self.blocks:
+            out = state_below
+            for layer in block:
+                out = layer._test_fprop(out)
+            state_below = out + state_below
+        return out
+
+
+def train():
+
+    batchsize = 64
+    learning_rate = 0.001
+    max_epoch = 10
+
+    # batch x depth x height x width x channel
+    X_train = np.random.rand(1000, 20, 32, 32, 1)
+    M_train = np.random.rand(1000, 20, 32, 32, 1)
+
+    X_valid = np.random.rand(1000, 20, 32, 32, 1)
+    M_valid = np.random.rand(1000, 20, 32, 32, 1)
+
+
+    X_ph = tf.placeholder('float32', [None, 20, 32, 32, 1])
+    M_ph = tf.placeholder('float32', [None, 20, 32, 32, 1])
+
+    h, w = 32, 32
+
+    model = tg.Sequential()
+    model.add(ResNet(num_blocks=10))
+    model.add(Sigmoid())
+
+
+    M_train_s = model.train_fprop(X_ph)
+    M_valid_s = model.test_fprop(X_ph)
+
+    train_mse = tf.reduce_mean((M_ph - M_train_s)**2)
+    valid_mse = tf.reduce_mean((M_ph - M_valid_s)**2)
+
+    data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
+    data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
+
+    optimizer = tf.train.AdamOptimizer(learning_rate).minimize(train_mse)
+
+    with tf.Session() as sess:
+        init = tf.initialize_all_variables()
+        sess.run(init)
+        for epoch in range(max_epoch):
+            print 'epoch:', epoch
+            print '..training'
+            pbar = ProgressBar(len(data_train))
+            n_exp = 0
+            for X_batch, M_batch in data_train:
+                pbar.update(n_exp)
+                sess.run(optimizer, feed_dict={X_ph:X_batch, M_ph:M_batch})
+                n_exp += len(X_batch)
+
+
+            print '..validating'
+            valid_mse_score = sess.run(valid_mse, feed_dict={X_ph:X_valid, M_ph:M_valid})
+            print 'valid mse score:', valid_mse_score
+
+
+if __name__ == '__main__':
+    train()
