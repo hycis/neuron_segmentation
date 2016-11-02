@@ -104,7 +104,6 @@ def train():
             valid_mse_score = 0
             for X_batch, M_batch in data_valid:
                 feed_dict={X_ph:X_batch, M_ph:M_batch}
-                sess.run(optimizer, feed_dict=feed_dict)
                 valid_mse_score += sess.run(valid_mse, feed_dict=feed_dict) * len(X_batch)
                 n_exp += len(X_batch)
                 pbar.update(n_exp)
