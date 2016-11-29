@@ -39,6 +39,13 @@ class ResNet(Template):
         return out
 
 
+def model1():
+    model = tg.Sequential()
+    model.add(ResNet(num_blocks=1))
+    model.add(Sigmoid())
+    return model
+
+
 def train():
 
     batchsize = 64
@@ -54,10 +61,7 @@ def train():
 
     h, w = 32, 32
 
-    model = tg.Sequential()
-    model.add(ResNet(num_blocks=1))
-    model.add(Sigmoid())
-
+    model = model1()
 
     M_train_s = model.train_fprop(X_ph)
     M_valid_s = model.test_fprop(X_ph)
