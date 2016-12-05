@@ -19,10 +19,13 @@ class Iris(object):
 
 
     def make_data(self):
-        test_nums = ['01', '02', '05', '06', '09']
+        test_num = ['01', '02', '05', '06', '09']
         train_num = ['21', '22', '25', '26', '29']
-        labels_path = ['{}/{}_manual1.gif'.format(self.data_dir,num) for num in train_num]
-        images_path = ['{}/{}_training.tif'.format(self.data_dir,num) for num in train_num]
+        test_labels = ['{}/{}_manual1.gif'.format(self.data_dir,num) for num in test_num]
+        test_images = ['{}/{}_test.tif'.format(self.data_dir,num) for num in test_num]
+        labels_path = ['{}/{}_manual1.gif'.format(self.data_dir,num) for num in train_num] + test_labels
+        images_path = ['{}/{}_training.tif'.format(self.data_dir,num) for num in train_num] + test_images
+        images_num = train_num + test_num
         labels = []
         images = []
         for img_path, lbl_path in zip(images_path, labels_path):
@@ -37,7 +40,7 @@ class Iris(object):
 
         img_patches = []
         lbl_patches = []
-        for img, lbl, num in zip(images, labels, train_num):
+        for img, lbl, num in zip(images, labels, images_num):
             print '..processing img {}'.format(num)
             count = 0
             h, w, c = lbl.shape
@@ -67,6 +70,12 @@ class Iris(object):
         train = tg.SequentialIterator(img_patches[:num_train], lbl_patches[:num_train], batchsize=self.batchsize)
         valid = tg.SequentialIterator(img_patches[num_train:], lbl_patches[num_train:], batchsize=self.batchsize)
         return train, valid
+
+
+# class Skin(object):
+
+
+
 
 if __name__ == '__main__':
     data = Iris()
