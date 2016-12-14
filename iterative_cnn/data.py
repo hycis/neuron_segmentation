@@ -2,6 +2,8 @@
 from PIL import Image
 import numpy as np
 import tensorgraph as tg
+import glob
+# import cv2s
 
 
 class Iris(object):
@@ -18,30 +20,17 @@ class Iris(object):
         self.shuffle = shuffle
 
 
-    def make_data(self):
-        test_num = ['01', '02', '05', '06', '09']
-        train_num = ['21', '22', '25', '26', '29']
-        test_labels = ['{}/{}_manual1.gif'.format(self.data_dir,num) for num in test_num]
-        test_images = ['{}/{}_test.tif'.format(self.data_dir,num) for num in test_num]
-        labels_path = ['{}/{}_manual1.gif'.format(self.data_dir,num) for num in train_num] + test_labels
-        images_path = ['{}/{}_training.tif'.format(self.data_dir,num) for num in train_num] + test_images
-        images_num = train_num + test_num
-        labels = []
-        images = []
+
+    def extract_patches(self, images_path, labels_path):
+        img_patches = []
+        lbl_patches = []
         for img_path, lbl_path in zip(images_path, labels_path):
             lbl = Image.open(lbl_path)
             lbl = np.asarray(lbl)[:,:,np.newaxis]
             lbl = lbl / 255
-            labels.append(lbl)
-
-            im = Image.open(img_path)
-            im = np.asarray(im) / 255
-            images.append(im)
-
-        img_patches = []
-        lbl_patches = []
-        for img, lbl, num in zip(images, labels, images_num):
-            print '..processing img {}'.format(num)
+            img = Image.open(img_path)
+            img = np.asarray(img) / 255
+            print('..processing img {}'.format(img_path))
             count = 0
             h, w, c = lbl.shape
             while count < self.num_patch_per_img:
@@ -53,30 +42,171 @@ class Iris(object):
                     img_crop = img[y:y+self.patch_size[0], x:x+self.patch_size[1], :]
                     img_patches.append(img_crop)
                     count += 1
+        return np.asarray(img_patches), np.asarray(lbl_patches)
 
-        img_patches = np.asarray(img_patches)
-        lbl_patches = np.asarray(lbl_patches)
+
+    def make_data(self):
+        test_num = ['01', '02', '05', '06', '09']
+        train_num = ['21', '22', '25', '26', '29']
+        test_labels_path = ['{}/{}_manual1.gif'.format(self.data_dir,num) for num in test_num]
+        test_images_path = ['{}/{}_test.tif'.format(self.data_dir,num) for num in test_num]
+        train_labels_path = ['{}/{}_manual1.gif'.format(self.data_dir,num) for num in train_num]
+        train_images_path = ['{}/{}_training.tif'.format(self.data_dir,num) for num in train_num]
+
+        train_patches, train_lbl = self.extract_patches(train_images_path, train_labels_path)
+        test_patches, test_lbl = self.extract_patches(test_images_path, test_labels_path)
 
         if self.shuffle:
-            print '..shuffling'
+            print('..shuffling')
             np.random.seed(1012)
-            shf_idx = np.arange(len(img_patches))
+            shf_idx = np.arange(len(train_patches))
             np.random.shuffle(shf_idx)
-            img_patches = img_patches[shf_idx]
-            lbl_patches = lbl_patches[shf_idx]
+            train_patches = train_patches[shf_idx]
+            train_lbl = train_lbl[shf_idx]
 
-        num_train = float(self.train_valid[0]) / sum(self.train_valid) * len(img_patches)
-        num_train = int(num_train)
-        train = tg.SequentialIterator(img_patches[:num_train], lbl_patches[:num_train], batchsize=self.batchsize)
-        valid = tg.SequentialIterator(img_patches[num_train:], lbl_patches[num_train:], batchsize=self.batchsize)
+        # num_train = float(self.train_valid[0]) / sum(self.train_valid) * len(img_patches)
+        # num_train = int(num_train)
+        train = tg.SequentialIterator(train_patches, train_lbl, batchsize=self.batchsize)
+        valid = tg.SequentialIterator(test_patches, test_lbl, batchsize=self.batchsize)
         return train, valid
 
 
-# class Skin(object):
+class Skin(object):
+
+    def __init__(self, train_valid, batchsize, shuffle=True):
+        self.input_dir = '../data/Skin'
+        self.train_valid = train_valid
+        self.shuffle = shuffle
+        self.batchsize = batchsize
+        self.img_augment = False
+        self.load_data = True
+
+
+    def make_data(self, img_augment=False):
+        images = glob.glob(self.input_dir + '/Image/*.jpg')
+        X = []
+        y = []
+        _IMG_INPUT_DIM_ = (3, 128, 128)
+        c, h, w = _IMG_INPUT_DIM_
+
+        if self.load_data:
+            print('..loading data')
+            # with open() as Xin, open() as yin:
+            X = np.load('../data/skin_X.npy')
+            y = np.load('../data/skin_y.npy')
+        else:
+            for imgpath in images:
+                X_img = []
+                y_img = []
+                # import pdb; pdb.set_trace()
+                imgx = Image.open(imgpath)
+                imgx = imgx.resize((w,h))
+                imgx = np.asarray(imgx) / 255.0
+
+                lblpath = imgpath.replace('Image', 'Label')
+                lblpath = lblpath.replace('.jpg', '_Segmentation.png')
+
+                # ddir = os.path.dirname(imgpath)
+                # ddir = os.path.dirname(ddir)
+                # lbldir = ddir + '/Label'
+                # fname = os.path.basename(imgpath)
+                # fname = fname.replace('.jpg', '_Segmentation.png')
+                # fname = fname.replace('.' + args.extension, '')
+
+                # lblpath = lbldir + '/' + args.label_pattern.replace('%', fname)
+                # lblpath = lbldir + '/' + fname
+                # imgy = cv2.imread(lblpath)
+                imgy = Image.open(lblpath)
+                imgy = imgy.resize((w,h))
+                imgy = np.asarray(imgy)[:,:,np.newaxis] / 255.0
+                # import pdb; pdb.set_trace()
+                # imgx = cv2.resize(imgx, (w,h))
+                # imgy = cv2.resize(imgy, (w,h))
+                X_img.append(imgx)
+                y_img.append(imgy)
+
+
+                if self.img_augment:
+                    imh, imw, imc = imgx.shape
+
+                    # scales = [0.5, 0.6, 0.7, 0.8]
+                    # scales = [0.5, 0.8]
+                    # pts2s = []
+                    # for scale in scales:
+                    #     pts21 = np.float32([[0,0],[scale*imw,imh],[imw,0],[imw,imh]])
+                    #     pts22 = np.float32([[0,0],[0,scale*imh],[imw,0],[imw,imh]])
+                    #     pts23 = np.float32([[0,0],[0,imh],[scale*imw,0],[imw,imh]])
+                    #     pts24 = np.float32([[0,0],[0,imh],[imw,scale*imh],[imw,imh]])
+                    #     pts25 = np.float32([[0,0],[0,imh],[imw,0],[scale*imw,imh]])
+                    #     pts26 = np.float32([[0,0],[0,imh],[imw,0],[imw,scale*imh]])
+                    #     pts27 = np.float32([[scale*imw,0],[scale*imw,imh],[imw,0],[imw,imh]])
+                    #     pts28 = np.float32([[0,scale*imh],[scale*imw,imh],[imw,0],[imw,imh]])
+                    #     pts2s += [pts21, pts22, pts23, pts24, pts25, pts26, pts27, pts28]
+                    #
+                    #
+                    # pts1 = np.float32([[0,0],[0,imh],[imw,0],[imw,imh]])
+                    # for pts2 in pts2s:
+                    #     m = cv2.getPerspectiveTransform(pts1,pts2)
+                    #     dstx = cv2.warpPerspective(imgx,m,(imw,imh))
+                    #     dsty = cv2.warpPerspective(imgy,m,(imw,imh))
+                    #     dstx = cv2.resize(dstx, (w,h))
+                    #     dsty = cv2.resize(dsty, (w,h))
+                    #     X_img.append(dstx)
+                    #     y_img.append(dsty)
+
+                    rotx = []
+                    roty = []
+                    for imgx, imgy in zip(X_img, y_img):
+                        for angle in [90, 180, 270]:
+                            m = cv2.getRotationMatrix2D((w/2,h/2), angle, 1)
+                            dstx = cv2.warpAffine(imgx, m, (w,h))
+                            dsty = cv2.warpAffine(imgy, m, (w,h))
+                            rotx.append(dstx)
+                            roty.append(dsty)
+
+                    X_img += rotx
+                    y_img += roty
+
+
+                X += X_img
+                y += y_img
+                print('lenX', len(X))
+                print('leny', len(y))
+
+
+            X = np.asarray(X)
+            # # X = np.rollaxis(X, 3, 1)
+            y = np.asarray(y)
+            # # y = np.rollaxis(y, 3, 1)
+            # # import pdb; pdb.set_trace()
+            #
+            with open('../data/skin_X.npy', 'wb') as Xout,\
+                open('../data/skin_y.npy', 'wb') as yout:
+                np.save(Xout, X)
+                np.save(yout, y)
+
+
+
+
+        num_train = float(self.train_valid[0]) / sum(self.train_valid) * len(X)
+        num_train = int(num_train)
+
+        if self.shuffle:
+            print('..shuffling')
+            np.random.seed(1012)
+            shf_idx = np.arange(len(X))
+            np.random.shuffle(shf_idx)
+            X = X[shf_idx]
+            y = y[shf_idx]
+
+        train = tg.SequentialIterator(X[:num_train], y[:num_train], batchsize=self.batchsize)
+        valid = tg.SequentialIterator(X[num_train:], y[num_train:], batchsize=self.batchsize)
+        return train, valid
 
 
 
 
 if __name__ == '__main__':
-    data = Iris()
+    # data = Iris()
+    data = Skin(train_valid=[5,1], shuffle=True, batchsize=32)
     data.make_data()

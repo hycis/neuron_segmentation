@@ -77,14 +77,14 @@ def train():
     optimizer = tf.train.AdamOptimizer(learning_rate).minimize(train_mse)
 
     with tf.Session() as sess:
-        init = tf.initialize_all_variables()
+        init = tf.global_variables_initializer()
         sess.run(init)
         es = tg.EarlyStopper(max_epoch=max_epoch,
                              epoch_look_back=epoch_look_back,
                              percent_decrease=percent_decrease)
         for epoch in range(max_epoch):
-            print 'epoch:', epoch
-            print '..training'
+            print('epoch:', epoch)
+            print('..training')
             pbar = ProgressBar(len(data_train))
             n_exp = 0
             train_mse_score = 0
@@ -95,10 +95,10 @@ def train():
                 n_exp += len(X_batch)
                 pbar.update(n_exp)
             train_mse_score /= n_exp
-            print 'mean train mse:', train_mse_score
+            print('mean train mse:', train_mse_score)
 
 
-            print '..validating'
+            print('..validating')
             pbar = ProgressBar(len(data_valid))
             n_exp = 0
             valid_mse_score = 0
@@ -108,16 +108,16 @@ def train():
                 n_exp += len(X_batch)
                 pbar.update(n_exp)
             valid_mse_score /= n_exp
-            print 'mean valid mse:', valid_mse_score
+            print('mean valid mse:', valid_mse_score)
 
             if es.continue_learning(valid_error=valid_mse_score):
-                print 'epoch', epoch
-                print 'valid error so far:', valid_mse_score
-                print 'best epoch last update:', es.best_epoch_last_update
-                print 'best valid last update:', es.best_valid_last_update
+                print('epoch', epoch)
+                print('valid error so far:', valid_mse_score)
+                print('best epoch last update:', es.best_epoch_last_update)
+                print('best valid last update:', es.best_valid_last_update)
 
             else:
-                print 'training done!'
+                print('training done!')
                 break
 
 

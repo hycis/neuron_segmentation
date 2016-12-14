@@ -58,17 +58,17 @@ def train():
     optimizer = tf.train.AdamOptimizer(learning_rate).minimize(train_mse)
 
     with tf.Session() as sess:
-        init = tf.initialize_all_variables()
+        init = tf.global_variables_initializer()
         sess.run(init)
         for epoch in range(max_epoch):
-            print 'epoch:', epoch
-            print '..training'
+            print('epoch:', epoch)
+            print('..training')
             for X_batch, M_batch in data_train:
                 sess.run(optimizer, feed_dict={X_ph:X_batch, M_ph:M_batch})
 
-            print '..validating'
+            print('..validating')
             valid_mse_score = sess.run(valid_mse, feed_dict={X_ph:X_valid, M_ph:M_valid})
-            print 'valid mse score:', valid_mse_score
+            print('valid mse score:', valid_mse_score)
 
 
 if __name__ == '__main__':
