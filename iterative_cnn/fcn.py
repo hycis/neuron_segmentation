@@ -29,7 +29,7 @@ class ResNet(Template):
             for layer in block:
                 out = layer._train_fprop(out)
             state_below = out + state_below
-        return out
+        return state_below
 
 
     def _test_fprop(self, state_below):
@@ -38,7 +38,7 @@ class ResNet(Template):
             for layer in block:
                 out = layer._test_fprop(out)
             state_below = out + state_below
-        return out
+        return state_below
 
 
 class CRF_RNN(Template):
