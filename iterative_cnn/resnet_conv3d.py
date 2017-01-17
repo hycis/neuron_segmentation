@@ -40,6 +40,16 @@ class ResNet(Template):
         return state_below
 
 
+def iou(ytrue, ypred):
+    ytrue = tf.reshape(ytrue, [-1])
+    ypred = tf.reshape(ypred, [-1])
+    I = tf.reduce_mean(ytrue * ypred)
+    y_area = tf.reduce_sum(y)
+    ypred_area = tf.reduce_sum(ypred)
+    IOU = I * 1.0 / (y_area + ypred_area - I)
+    return -T.mean(IOU)
+
+
 def train():
 
     batchsize = 64
@@ -72,14 +82,15 @@ def train():
     M_train_s = model.train_fprop(X_ph)
     M_valid_s = model.test_fprop(X_ph)
 
-    train_mse = tf.reduce_mean((M_ph - M_train_s)**2)
-    valid_mse = tf.reduce_mean((M_ph - M_valid_s)**2)
+    # train_cost = tf.reduce_mean((M_ph - M_train_s)**2)
+    train_cost = iou(M_ph, M_train_s)
+    valid_cost = tf.reduce_mean((M_ph - M_valid_s)**2)
     # valid_f1 = binary_f1(M_ph, M_valid_s > 0.1)
 
     # data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
     # data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
 
-    optimizer = tf.train.AdamOptimizer(learning_rate).minimize(train_mse)
+    optimizer = tf.train.AdamOptimizer(learning_rate).minimize(train_cost)
 
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
@@ -97,7 +108,7 @@ def train():
             for X_batch, M_batch in blks_train:
                 feed_dict={X_ph:X_batch, M_ph:M_batch}
                 sess.run(optimizer, feed_dict=feed_dict)
-                train_mse_score += sess.run(train_mse, feed_dict=feed_dict) * len(X_batch)
+                train_mse_score += sess.run(train_cost, feed_dict=feed_dict) * len(X_batch)
                 n_exp += len(X_batch)
                 pbar.update(n_exp)
             train_mse_score /= n_exp
@@ -111,7 +122,7 @@ def train():
             # for data_valid in blks_valid:
             for X_batch, M_batch in blks_valid:
                 feed_dict={X_ph:X_batch, M_ph:M_batch}
-                valid_mse_score += sess.run(valid_mse, feed_dict=feed_dict) * len(X_batch)
+                valid_mse_score += sess.run(valid_cost, feed_dict=feed_dict) * len(X_batch)
                 n_exp += len(X_batch)
                 pbar.update(n_exp)
             valid_mse_score /= n_exp
