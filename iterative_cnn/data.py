@@ -229,6 +229,7 @@ class DataBlks(object):
             X_npy = np.expand_dims(np.load(Xin), -1)
             X_npy /= 255
             y_npy = np.expand_dims(np.load(yin), -1)
+            y_npy /= 100
             print('X_npy max', np.max(X_npy))
             print('y_npy max', np.max(y_npy))
             print('X.shape:', X_npy.shape)
@@ -252,7 +253,7 @@ class DataBlks(object):
 
             lbl_crop = y_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
             if lbl_crop.mean() > self.min_density:
-                import pdb; pdb.set_trace()
+                # import pdb; pdb.set_trace()
                 lbl_patches.append(lbl_crop)
                 img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
                 img_patches.append(img_crop)
