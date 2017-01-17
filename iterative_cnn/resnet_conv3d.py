@@ -5,6 +5,7 @@ from tensorgraph.utils import valid, same
 from tensorgraph import ProgressBar
 import tensorflow as tf
 import numpy as np
+from data import datablks
 
 
 class ResNet(Template):
@@ -46,19 +47,22 @@ def train():
     max_epoch = 10
     epoch_look_back = 3
     percent_decrease = 0.01
+    d, h, w = 32, 32, 32
+    min_density = 0.2
 
     # batch x depth x height x width x channel
-    X_train = np.random.rand(1000, 20, 32, 32, 1)
-    M_train = np.random.rand(1000, 20, 32, 32, 1)
+    # X_train = np.random.rand(1000, 20, 32, 32, 1)
+    # M_train = np.random.rand(1000, 20, 32, 32, 1)
+    #
+    # X_valid = np.random.rand(1000, 20, 32, 32, 1)
+    # M_valid = np.random.rand(1000, 20, 32, 32, 1)
 
-    X_valid = np.random.rand(1000, 20, 32, 32, 1)
-    M_valid = np.random.rand(1000, 20, 32, 32, 1)
 
+    X_ph = tf.placeholder('float32', [None, d, h, w, 1])
+    M_ph = tf.placeholder('float32', [None, d, h, w, 1])
 
-    X_ph = tf.placeholder('float32', [None, 20, 32, 32, 1])
-    M_ph = tf.placeholder('float32', [None, 20, 32, 32, 1])
+    blks_train, blks_valid = datablks(d, h, w, batchsize, min_density)
 
-    h, w = 32, 32
 
     model = tg.Sequential()
     model.add(ResNet(num_blocks=1))
@@ -71,8 +75,8 @@ def train():
     train_mse = tf.reduce_mean((M_ph - M_train_s)**2)
     valid_mse = tf.reduce_mean((M_ph - M_valid_s)**2)
 
-    data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
-    data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
+    # data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
+    # data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
 
     optimizer = tf.train.AdamOptimizer(learning_rate).minimize(train_mse)
 
@@ -85,28 +89,30 @@ def train():
         for epoch in range(max_epoch):
             print('epoch:', epoch)
             print('..training')
-            pbar = ProgressBar(len(data_train))
+            pbar = ProgressBar(len(blks_train))
             n_exp = 0
             train_mse_score = 0
-            for X_batch, M_batch in data_train:
-                feed_dict={X_ph:X_batch, M_ph:M_batch}
-                sess.run(optimizer, feed_dict=feed_dict)
-                train_mse_score += sess.run(train_mse, feed_dict=feed_dict) * len(X_batch)
-                n_exp += len(X_batch)
-                pbar.update(n_exp)
+            for data_train in blks_train:
+                for X_batch, M_batch in data_train:
+                    feed_dict={X_ph:X_batch, M_ph:M_batch}
+                    sess.run(optimizer, feed_dict=feed_dict)
+                    train_mse_score += sess.run(train_mse, feed_dict=feed_dict) * len(X_batch)
+                    n_exp += len(X_batch)
+                    pbar.update(n_exp)
             train_mse_score /= n_exp
             print('mean train mse:', train_mse_score)
 
 
             print('..validating')
-            pbar = ProgressBar(len(data_valid))
+            pbar = ProgressBar(len(blks_valid))
             n_exp = 0
             valid_mse_score = 0
-            for X_batch, M_batch in data_valid:
-                feed_dict={X_ph:X_batch, M_ph:M_batch}
-                valid_mse_score += sess.run(valid_mse, feed_dict=feed_dict) * len(X_batch)
-                n_exp += len(X_batch)
-                pbar.update(n_exp)
+            for data_valid in blks_valid:
+                for X_batch, M_batch in data_valid:
+                    feed_dict={X_ph:X_batch, M_ph:M_batch}
+                    valid_mse_score += sess.run(valid_mse, feed_dict=feed_dict) * len(X_batch)
+                    n_exp += len(X_batch)
+                    pbar.update(n_exp)
             valid_mse_score /= n_exp
             print('mean valid mse:', valid_mse_score)
 

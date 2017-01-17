@@ -205,6 +205,74 @@ class Skin(object):
 
 
 
+class DataBlks(object):
+
+    def __init__(self, paths, depth, height, width, batchsize, min_density, num_patch_per_img):
+        self.paths = paths
+        self.depth = depth
+        self.height = height
+        self.width = width
+        self.batchsize = batchsize
+        self.min_density = min_density
+        self.num_patch_per_img = num_patch_per_img
+
+
+    def __iter__(self):
+        self.path_iter = iter(self.paths)
+        return self
+
+
+    def __next__(self):
+        X_path, y_path = next(self.path_iter)
+        print('..loading data blk')
+        with open(X_path) as Xin, open(y_path) as yin:
+            X_npy = np.load(Xin)
+            y_npy = np.load(yin)
+        X_patches, y_patches = self.extract_patches(X_npy, y_npy)
+        del X_npy, y_npy
+        blk = tg.SequentialIterator(X_patches, y_patches, batchsize=self.batchsize)
+        return blk
+
+
+    def extract_patches(self, X_npy, y_npy):
+        img_patches = []
+        lbl_patches = []
+        count = 0
+        d, h, w, c = X_npy.shape
+        while count < self.num_patch_per_img:
+            y = np.random.randint(0, h-self.height)
+            x = np.random.randint(0, w-self.width)
+            z = np.random.randint(0, d-self.depth)
+
+            lbl_crop = y_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
+            if lbl_crop.mean() > self.min_density:
+                lbl_patches.append(lbl_crop)
+                img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
+                img_patches.append(img_crop)
+                count += 1
+        return np.asarray(img_patches), np.asarray(lbl_patches)
+
+
+    def next(self):
+        return self.__next__()
+
+
+def datablks(d, h, w, batchsize, min_density):
+    train_paths = [("{dir}/train_npy/{num}.npy".format(dir=dname, num=num),
+                    "{dir}/train_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
+                    for num in range(1, 13)]
+    valid_paths = [("{dir}/train_npy/{num}.npy".format(dir=dname, num=num),
+                    "{dir}/train_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
+                    for num in range(13, 17)]
+
+    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density, num_patch_per_img=2000)
+    blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density, num_patch_per_img=2000)
+    return blk_train, blk_valid
+
+
+
+
+
 
 if __name__ == '__main__':
     # data = Iris()
