@@ -44,7 +44,7 @@ def iou(ytrue, ypred):
     ytrue = tf.reshape(ytrue, [-1])
     ypred = tf.reshape(ypred, [-1])
     I = tf.reduce_mean(ytrue * ypred)
-    y_area = tf.reduce_sum(y)
+    y_area = tf.reduce_sum(ytrue)
     ypred_area = tf.reduce_sum(ypred)
     IOU = I * 1.0 / (y_area + ypred_area - I)
     return -T.mean(IOU)
