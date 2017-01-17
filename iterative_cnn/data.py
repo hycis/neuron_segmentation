@@ -226,8 +226,8 @@ class DataBlks(object):
         X_path, y_path = next(self.path_iter)
         print('..loading data blk')
         with open(X_path) as Xin, open(y_path) as yin:
-            X_npy = np.expand_dim(np.load(Xin), -1)
-            y_npy = np.expand_dim(np.load(yin), -1)
+            X_npy = np.expand_dims(np.load(Xin), -1)
+            y_npy = np.expand_dims(np.load(yin), -1)
             print('X.shape:', X_npy.shape)
             print('y.shape:', y_npy.shape)
         X_patches, y_patches = self.extract_patches(X_npy, y_npy)
