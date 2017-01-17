@@ -47,7 +47,7 @@ def iou(ytrue, ypred):
     y_area = tf.reduce_sum(ytrue)
     ypred_area = tf.reduce_sum(ypred)
     IOU = I * 1.0 / (y_area + ypred_area - I)
-    return -T.mean(IOU)
+    return -tf.reduce_mean(IOU)
 
 
 def train():
