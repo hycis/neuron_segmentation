@@ -256,6 +256,9 @@ class DataBlks(object):
     def next(self):
         return self.__next__()
 
+    def __len__(self):
+        return self.num_patch_per_img * len(self.paths)
+
 
 def datablks(d, h, w, batchsize, min_density):
     dname = '/home/malyatha'
