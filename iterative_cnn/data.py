@@ -247,8 +247,10 @@ class DataBlks(object):
         for X_path, y_path in self.paths:
             with open(X_path) as Xin, open(y_path) as yin:
                 X_npy = np.expand_dims(np.load(Xin), -1)
+                print('X unique', np.unique(X_npy))
                 X_npy /= 255
                 y_npy = np.expand_dims(np.load(yin), -1)
+                print('y unique', np.unique(y_npy))
                 y_npy /= 100
             X_patch, y_patch = self.extract_patches(X_npy, y_npy)
             del X_npy, y_npy
