@@ -240,7 +240,7 @@ class DataBlks(object):
         img_patches = []
         lbl_patches = []
         count = 0
-        d, h, w, c = X_npy.shape
+        d, h, w = X_npy.shape
         while count < self.num_patch_per_img:
             y = np.random.randint(0, h-self.height)
             x = np.random.randint(0, w-self.width)
