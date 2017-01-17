@@ -260,7 +260,7 @@ class DataBlks(object):
                 img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
                 img_patches.append(img_crop)
                 count += 1
-                print count
+                # print count
         return np.asarray(img_patches), np.asarray(lbl_patches)
 
 
