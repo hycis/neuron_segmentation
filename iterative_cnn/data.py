@@ -228,6 +228,8 @@ class DataBlks(object):
         with open(X_path) as Xin, open(y_path) as yin:
             X_npy = np.expand_dims(np.load(Xin), -1)
             y_npy = np.expand_dims(np.load(yin), -1)
+            print('X_npy max', np.max(X_npy))
+            print('y_npy max', np.max(y_npy))
             print('X.shape:', X_npy.shape)
             print('y.shape:', y_npy.shape)
         print('..extracting patches')
@@ -272,8 +274,8 @@ def datablks(d, h, w, batchsize, min_density):
                     "{dir}/train_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
                     for num in range(13, 17)]
 
-    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density, num_patch_per_img=2000)
-    blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density, num_patch_per_img=2000)
+    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density, num_patch_per_img=1000)
+    blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density, num_patch_per_img=1000)
     return blk_train, blk_valid
 
 
