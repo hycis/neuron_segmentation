@@ -226,8 +226,8 @@ class DataBlks(object):
         X_path, y_path = next(self.path_iter)
         print('..loading data blk')
         with open(X_path) as Xin, open(y_path) as yin:
-            X_npy = np.load(Xin)
-            y_npy = np.load(yin)
+            X_npy = np.expand_dim(np.load(Xin), -1)
+            y_npy = np.expand_dim(np.load(yin), -1)
             print('X.shape:', X_npy.shape)
             print('y.shape:', y_npy.shape)
         X_patches, y_patches = self.extract_patches(X_npy, y_npy)
@@ -240,7 +240,7 @@ class DataBlks(object):
         img_patches = []
         lbl_patches = []
         count = 0
-        d, h, w = X_npy.shape
+        d, h, w, c = X_npy.shape
         while count < self.num_patch_per_img:
             y = np.random.randint(0, h-self.height)
             x = np.random.randint(0, w-self.width)
