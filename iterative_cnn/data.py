@@ -254,6 +254,7 @@ class DataBlks(object):
             del X_npy, y_npy
             X_patches.append(X_patch)
             y_patches.append(y_patch)
+            print("{} done! of {}".format(X_path, len(self.paths)))
         X_patches = np.concatenate(X_patches)
         y_patches = np.concatenate(y_patches)
         print('X shape', X_patches.shape)
