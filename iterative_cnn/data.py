@@ -230,6 +230,7 @@ class DataBlks(object):
             y_npy = np.expand_dims(np.load(yin), -1)
             print('X.shape:', X_npy.shape)
             print('y.shape:', y_npy.shape)
+        print('..extracting patches')
         X_patches, y_patches = self.extract_patches(X_npy, y_npy)
         del X_npy, y_npy
         blk = tg.SequentialIterator(X_patches, y_patches, batchsize=self.batchsize)
