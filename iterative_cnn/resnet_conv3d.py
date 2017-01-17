@@ -74,6 +74,7 @@ def train():
 
     train_mse = tf.reduce_mean((M_ph - M_train_s)**2)
     valid_mse = tf.reduce_mean((M_ph - M_valid_s)**2)
+    valid_f1 = binary_f1(M_ph, M_valid_s > 0.1)
 
     # data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
     # data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
@@ -92,13 +93,13 @@ def train():
             pbar = ProgressBar(len(blks_train))
             n_exp = 0
             train_mse_score = 0
-            for data_train in blks_train:
-                for X_batch, M_batch in data_train:
-                    feed_dict={X_ph:X_batch, M_ph:M_batch}
-                    sess.run(optimizer, feed_dict=feed_dict)
-                    train_mse_score += sess.run(train_mse, feed_dict=feed_dict) * len(X_batch)
-                    n_exp += len(X_batch)
-                    pbar.update(n_exp)
+            # for data_train in blks_train:
+            for X_batch, M_batch in blks_train:
+                feed_dict={X_ph:X_batch, M_ph:M_batch}
+                sess.run(optimizer, feed_dict=feed_dict)
+                train_mse_score += sess.run(train_mse, feed_dict=feed_dict) * len(X_batch)
+                n_exp += len(X_batch)
+                pbar.update(n_exp)
             train_mse_score /= n_exp
             print('mean train mse:', train_mse_score)
 
@@ -107,12 +108,12 @@ def train():
             pbar = ProgressBar(len(blks_valid))
             n_exp = 0
             valid_mse_score = 0
-            for data_valid in blks_valid:
-                for X_batch, M_batch in data_valid:
-                    feed_dict={X_ph:X_batch, M_ph:M_batch}
-                    valid_mse_score += sess.run(valid_mse, feed_dict=feed_dict) * len(X_batch)
-                    n_exp += len(X_batch)
-                    pbar.update(n_exp)
+            # for data_valid in blks_valid:
+            for X_batch, M_batch in blks_valid:
+                feed_dict={X_ph:X_batch, M_ph:M_batch}
+                valid_mse_score += sess.run(valid_mse, feed_dict=feed_dict) * len(X_batch)
+                n_exp += len(X_batch)
+                pbar.update(n_exp)
             valid_mse_score /= n_exp
             print('mean valid mse:', valid_mse_score)
 

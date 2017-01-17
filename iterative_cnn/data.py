@@ -217,28 +217,49 @@ class DataBlks(object):
         self.num_patch_per_img = num_patch_per_img
 
 
-    def __iter__(self):
-        self.path_iter = iter(self.paths)
-        return self
+    # def __iter__(self):
+        # self.path_iter = iter(self.paths)
+        # return self
 
 
-    def __next__(self):
-        X_path, y_path = next(self.path_iter)
-        print('..loading data blk')
-        with open(X_path) as Xin, open(y_path) as yin:
-            X_npy = np.expand_dims(np.load(Xin), -1)
-            X_npy /= 255
-            y_npy = np.expand_dims(np.load(yin), -1)
-            y_npy /= 100
-            print('X_npy max', np.max(X_npy))
-            print('y_npy max', np.max(y_npy))
-            print('X.shape:', X_npy.shape)
-            print('y.shape:', y_npy.shape)
-        print('..extracting patches')
-        X_patches, y_patches = self.extract_patches(X_npy, y_npy)
-        del X_npy, y_npy
-        blk = tg.SequentialIterator(X_patches, y_patches, batchsize=self.batchsize)
-        return blk
+    # def __next__(self):
+    #     X_path, y_path = next(self.path_iter)
+    #     print('..loading data blk')
+    #     with open(X_path) as Xin, open(y_path) as yin:
+    #         X_npy = np.expand_dims(np.load(Xin), -1)
+    #         X_npy /= 255
+    #         y_npy = np.expand_dims(np.load(yin), -1)
+    #         y_npy /= 100
+    #         print('X_npy max', np.max(X_npy))
+    #         print('y_npy max', np.max(y_npy))
+    #         print('X.shape:', X_npy.shape)
+    #         print('y.shape:', y_npy.shape)
+    #     print('..extracting patches')
+    #     X_patches, y_patches = self.extract_patches(X_npy, y_npy)
+    #     del X_npy, y_npy
+    #     blk = tg.SequentialIterator(X_patches, y_patches, batchsize=self.batchsize)
+    #     return blk
+
+    def make_data(self):
+        X_patches = []
+        y_patches = []
+        print('creating patches')
+        for X_path, y_path in self.paths:
+            with open(X_path) as Xin, open(y_path) as yin:
+                X_npy = np.expand_dims(np.load(Xin), -1)
+                X_npy /= 255
+                y_npy = np.expand_dims(np.load(yin), -1)
+                y_npy /= 100
+            X_patch, y_patch = self.extract_patches(X_npy, y_npy)
+            del X_npy, y_npy
+            X_patches.append(X_patch)
+            y_patches.append(y_patch)
+        X_patches = np.concatenate(X_patches)
+        y_patches = np.concatenate(y_patches)
+        print('X shape', X_patches.shape)
+        print('y shape', y_patches.shape)
+        return tg.SequentialIterator(X_patches, y_patches, batchsize=self.batchsize)
+
 
 
     def extract_patches(self, X_npy, y_npy):
@@ -254,7 +275,7 @@ class DataBlks(object):
             lbl_crop = y_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
             # if lbl_crop.mean() > 0:
             #     print lbl_crop.mean()
-            if lbl_crop.mean() >= self.min_density:
+            if lbl_crop.mean() > self.min_density:
                 # import pdb; pdb.set_trace()
                 lbl_patches.append(lbl_crop)
                 img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
@@ -282,7 +303,7 @@ def datablks(d, h, w, batchsize, min_density):
 
     blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=1000)
     blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=0, num_patch_per_img=1000)
-    return blk_train, blk_valid
+    return blk_train.make_data(), blk_valid.make_data()
 
 
 
