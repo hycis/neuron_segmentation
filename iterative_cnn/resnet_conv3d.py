@@ -47,7 +47,7 @@ def train():
     max_epoch = 10
     epoch_look_back = 3
     percent_decrease = 0.01
-    d, h, w = 50, 50, 25
+    d, h, w = 25, 25, 10
     min_density = 0.1
 
     # batch x depth x height x width x channel
