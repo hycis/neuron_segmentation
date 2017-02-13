@@ -2,7 +2,8 @@
 import tensorgraph as tg
 from tensorgraph.layers import Conv3D, RELU, Iterative, Sigmoid
 from tensorgraph.utils import valid, same
-from tensorgraph import ProgressBar, entropy
+from tensorgraph import ProgressBar
+from tensorgraph.cost import entropy
 import tensorflow as tf
 import numpy as np
 
