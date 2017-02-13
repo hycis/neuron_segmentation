@@ -12,7 +12,7 @@ def train():
 
     batchsize = 64
     learning_rate = 0.001
-    max_epoch = 10
+    max_epoch = 100
 
     # batch x depth x height x width x channel
     X_train = np.random.rand(1000, 20, 32, 32, 1)
