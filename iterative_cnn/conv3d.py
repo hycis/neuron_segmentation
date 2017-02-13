@@ -32,8 +32,8 @@ def train():
     iter_model.add(Conv3D(input_channels=1, num_filters=8, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
     iter_model.add(RELU())
     iter_model.add(Conv3D(input_channels=8, num_filters=1, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
-    iter_model.add(RELU())
-    model.add(Iterative(sequential=iter_model, num_iter=1))
+    # iter_model.add(RELU())
+    # model.add(Iterative(sequential=iter_model, num_iter=1))
     model.add(Sigmoid())
 
 
