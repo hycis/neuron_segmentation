@@ -41,10 +41,10 @@ def train():
     M_train_s = model.train_fprop(X_ph)
     M_valid_s = model.test_fprop(X_ph)
 
-    # train_mse = tf.reduce_mean((M_ph - M_train_s)**2)
-    # valid_mse = tf.reduce_mean((M_ph - M_valid_s)**2)
-    train_mse = entropy(M_ph, M_train_s)
-    valid_mse = entropy(M_ph, M_valid_s)
+    train_mse = tf.reduce_mean((M_ph - M_train_s)**2)
+    valid_mse = tf.reduce_mean((M_ph - M_valid_s)**2)
+    # train_mse = entropy(M_ph, M_train_s)
+    # valid_mse = entropy(M_ph, M_valid_s)
     valid_f1 = image_f1(tf.to_int32(M_ph), tf.to_int32(M_valid_s>=0.5))
 
     data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
