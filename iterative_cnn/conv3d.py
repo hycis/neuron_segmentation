@@ -67,8 +67,9 @@ def train():
 
 
             print('..validating')
-            valid_mse_score = sess.run(valid_mse, feed_dict={X_ph:X_valid, M_ph:M_valid})
+            valid_f1_score, valid_mse_score = sess.run([valid_f1, valid_mse], feed_dict={X_ph:X_valid, M_ph:M_valid})
             print('valid mse score:', valid_mse_score)
+            print('valid f1 score:', valid_f1_score)
 
 
 if __name__ == '__main__':
