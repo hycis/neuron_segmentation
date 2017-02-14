@@ -3,7 +3,7 @@ import tensorgraph as tg
 from tensorgraph.layers import Conv3D, RELU, Iterative, Sigmoid
 from tensorgraph.utils import valid, same
 from tensorgraph import ProgressBar
-from tensorgraph.cost import entropy
+from tensorgraph.cost import entropy, image_f1
 import tensorflow as tf
 import numpy as np
 
@@ -45,6 +45,7 @@ def train():
     # valid_mse = tf.reduce_mean((M_ph - M_valid_s)**2)
     train_mse = entropy(M_ph, M_train_s)
     valid_mse = entropy(M_ph, M_valid_s)
+    valid_f1 = image_f1(tf.to_int32(M_ph), tf.to_int32(M_valid_s>=0.5))
 
     data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
     data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
