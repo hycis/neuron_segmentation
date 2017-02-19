@@ -247,6 +247,41 @@ class DataBlks(object):
         for X_path, y_path in self.paths:
             with open(X_path) as Xin, open(y_path) as yin:
                 X_npy = np.expand_dims(np.load(Xin), -1)
+
+                print('before shrinked:', X_npy.shape)
+                while True:
+                    shrinked = False
+                    if X_npy[:10, :, :, :].sum() == 0:
+                        X_npy =  X_npy[:10, :, :, :]
+                        shrinked = True
+                    if X_npy[-10:, :, :, :].sum() == 0:
+                        X_npy = X_npy[-10:, :, :, :]
+                        shrinked = True
+
+                    if X_npy[:, :10, :, :].sum() == 0:
+                        X_npy =  X_npy[:, :10, :, :]
+                        shrinked = True
+                    if X_npy[:, -10:, :, :].sum() == 0:
+                        X_npy = X_npy[:, -10:, :, :]
+                        shrinked = True
+
+                    if X_npy[:, :, :10, :].sum() == 0:
+                        X_npy =  X_npy[:, :, :10, :]
+                        shrinked = True
+                    if X_npy[:, :, -10:, :].sum() == 0:
+                        X_npy = X_npy[:, :, -10:, :]
+                        shrinked = True
+
+                    if not shrinked:
+                        break
+
+                print('after shrinked:', X_npy.shape)
+
+
+
+
+
+
                 import pdb; pdb.set_trace()
                 print('X unique', np.unique(X_npy))
                 X_npy /= 255
