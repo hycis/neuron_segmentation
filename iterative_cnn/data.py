@@ -319,6 +319,12 @@ class DataBlks(object):
             print("{} done! of {}".format(X_path, len(self.paths)))
         X_patches = np.concatenate(X_patches)
         y_patches = np.concatenate(y_patches)
+
+        ridx = np.random.shuffle(np.arange(len(X_patches)))
+        import pdb; pdb.set_trace()
+        img_patches = img_patches[ridx]
+        lbl_patches = lbl_patches[ridx]
+
         print('X shape', X_patches.shape)
         print('y shape', y_patches.shape)
         return tg.SequentialIterator(X_patches, y_patches, batchsize=self.batchsize)
@@ -363,10 +369,6 @@ class DataBlks(object):
 
         img_patches = np.asarray(img_patches)
         lbl_patches = np.asarray(lbl_patches)
-        ridx = np.random.shuffle(np.arange(len(img_patches)))
-        import pdb; pdb.set_trace()
-        img_patches = img_patches[ridx]
-        lbl_patches = lbl_patches[ridx]
         return img_patches, lbl_patches
 
 
