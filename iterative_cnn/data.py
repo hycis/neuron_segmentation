@@ -327,6 +327,8 @@ class DataBlks(object):
 
             lbl_crop = y_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
             # if lbl_crop.mean() > 0:
+            if np.isnan(lbl_crop.mean()):
+                import pdb; pdb.set_trace()
             print('patch mean:', lbl_crop.mean())
             if lbl_crop.mean() > self.min_density:
                 # import pdb; pdb.set_trace()
