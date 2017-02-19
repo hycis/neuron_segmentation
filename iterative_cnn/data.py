@@ -291,10 +291,6 @@ class DataBlks(object):
                 print('after shrinked:', X_npy.shape)
 
 
-
-
-
-
                 # import pdb; pdb.set_trace()
                 # print('X unique', np.unique(X_npy))
                 X_npy /= 255
@@ -331,7 +327,7 @@ class DataBlks(object):
 
             lbl_crop = y_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
             # if lbl_crop.mean() > 0:
-            #     print lbl_crop.mean()
+            print('patch mean:', lbl_crop.mean())
             if lbl_crop.mean() > self.min_density:
                 # import pdb; pdb.set_trace()
                 lbl_patches.append(lbl_crop)
