@@ -23,8 +23,9 @@ class ResNet(Template):
             layers.append(RELU())
             # layers.append(BatchNormalization(layer_type='conv', dim=16, short_memory=0.01))
             layers.append(Conv3D(input_channels=8, num_filters=1, kernel_size=(3,3,3), stride=(1,1,1), padding='SAME'))
-            # layers.append(RELU())
+            layers.append(RELU())
             self.blocks.append(layers)
+        self.blocks.append([Conv3D(input_channels=1, num_filters=1, kernel_size=(3,3,3), stride=(1,1,1), padding='SAME')])
 
 
     def _train_fprop(self, state_below):
@@ -81,7 +82,7 @@ def train():
 
 
     model = tg.Sequential()
-    model.add(ResNet(num_blocks=1))
+    model.add(ResNet(num_blocks=5))
     model.add(Sigmoid())
 
 
