@@ -337,6 +337,7 @@ class DataBlks(object):
         print('number patches before:', num_patch_per_img)
         num_patch_per_img = 1000 if num_patch_per_img > 1000 else num_patch_per_img
         print('number patches picked:', num_patch_per_img)
+        ttl_num_patches_tried = 0
         while count < num_patch_per_img:
             y = np.random.randint(0, h-self.height)
             x = np.random.randint(0, w-self.width)
@@ -344,8 +345,8 @@ class DataBlks(object):
 
             lbl_crop = y_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
             # if lbl_crop.mean() > 0:
-            if np.isnan(lbl_crop.mean()):
-                import pdb; pdb.set_trace()
+            # if np.isnan(lbl_crop.mean()):
+            #     import pdb; pdb.set_trace()
 
             if lbl_crop.mean() > self.min_density:
                 # print('patch mean:', lbl_crop.mean())
@@ -355,6 +356,8 @@ class DataBlks(object):
                 img_patches.append(img_crop)
                 count += 1
                 # print count
+            ttl_num_patches_tried += 1
+        print('number of patches tried:', ttl_num_patches_tried)
         return np.asarray(img_patches), np.asarray(lbl_patches)
 
 
