@@ -44,7 +44,7 @@ DT=`date "+%Y%m%d_%H%M%S"`
 SAVDIR=$DIR/${DT}${TAG}
 mkdir -p $SAVDIR
 cp $SCRIPT $SAVDIR
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # CPDIR="cp $DIR/data_sep.py $SAVDIR"
 # echo $CPDIR
 # eval "$CPDIR"
