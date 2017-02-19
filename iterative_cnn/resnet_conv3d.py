@@ -58,7 +58,7 @@ def train():
     max_epoch = 100
     epoch_look_back = None
     percent_decrease = 0.01
-    d, h, w = 10, 10, 10
+    d, h, w = 20, 20, 20
     min_density = 0.10
     num_patch_per_img = 200
 
