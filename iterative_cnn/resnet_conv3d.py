@@ -57,8 +57,9 @@ def train():
     max_epoch = 100
     epoch_look_back = None
     percent_decrease = 0.01
-    d, h, w = 20, 20, 20
+    d, h, w = 50, 50, 50
     min_density = 0.0
+    num_patch_per_img = 1000
 
     # batch x depth x height x width x channel
     # X_train = np.random.rand(1000, 20, 32, 32, 1)
@@ -71,7 +72,7 @@ def train():
     X_ph = tf.placeholder('float32', [None, d, h, w, 1])
     M_ph = tf.placeholder('float32', [None, d, h, w, 1])
 
-    blks_train, blks_valid = datablks(d, h, w, batchsize, min_density)
+    blks_train, blks_valid = datablks(d, h, w, batchsize, min_density, num_patch_per_img)
 
 
     model = tg.Sequential()

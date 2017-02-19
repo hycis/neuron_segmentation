@@ -359,7 +359,7 @@ class DataBlks(object):
         return self.num_patch_per_img * len(self.paths)
 
 
-def datablks(d, h, w, batchsize, min_density):
+def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
     dname = '/home/malyatha'
     train_paths = [("{dir}/train_npy/{num}.npy".format(dir=dname, num=num),
                     "{dir}/train_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
@@ -368,8 +368,8 @@ def datablks(d, h, w, batchsize, min_density):
                     "{dir}/train_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
                     for num in range(13, 17)]
 
-    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=1000)
-    blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=0, num_patch_per_img=1000)
+    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img)
+    blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=0, num_patch_per_img=num_patch_per_img)
     return blk_train.make_data(), blk_valid.make_data()
 
 
