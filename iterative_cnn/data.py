@@ -321,9 +321,9 @@ class DataBlks(object):
         y_patches = np.concatenate(y_patches)
 
         ridx = np.random.shuffle(np.arange(len(X_patches)))
-        import pdb; pdb.set_trace()
-        img_patches = img_patches[ridx]
-        lbl_patches = lbl_patches[ridx]
+        # import pdb; pdb.set_trace()
+        X_patches = X_patches[ridx]
+        y_patches = y_patches[ridx]
 
         print('X shape', X_patches.shape)
         print('y shape', y_patches.shape)
