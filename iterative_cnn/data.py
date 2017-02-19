@@ -252,24 +252,24 @@ class DataBlks(object):
                 while True:
                     shrinked = False
                     if X_npy[:10, :, :, :].sum() == 0:
-                        X_npy =  X_npy[:10, :, :, :]
+                        X_npy =  X_npy[10:, :, :, :]
                         shrinked = True
                     if X_npy[-10:, :, :, :].sum() == 0:
-                        X_npy = X_npy[-10:, :, :, :]
+                        X_npy = X_npy[:-10, :, :, :]
                         shrinked = True
 
                     if X_npy[:, :10, :, :].sum() == 0:
-                        X_npy =  X_npy[:, :10, :, :]
+                        X_npy =  X_npy[:, 10:, :, :]
                         shrinked = True
                     if X_npy[:, -10:, :, :].sum() == 0:
-                        X_npy = X_npy[:, -10:, :, :]
+                        X_npy = X_npy[:, :-10, :, :]
                         shrinked = True
 
                     if X_npy[:, :, :10, :].sum() == 0:
-                        X_npy =  X_npy[:, :, :10, :]
+                        X_npy =  X_npy[:, :, 10:, :]
                         shrinked = True
                     if X_npy[:, :, -10:, :].sum() == 0:
-                        X_npy = X_npy[:, :, -10:, :]
+                        X_npy = X_npy[:, :, :-10, :]
                         shrinked = True
 
                     if not shrinked:
