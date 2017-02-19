@@ -76,7 +76,7 @@ def train():
 
 
     model = tg.Sequential()
-    model.add(ResNet(num_blocks=1))
+    model.add(ResNet(num_blocks=5))
     model.add(Sigmoid())
 
 
