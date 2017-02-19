@@ -59,7 +59,7 @@ def train():
     epoch_look_back = None
     percent_decrease = 0.01
     d, h, w = 10, 10, 10
-    min_density = 0.05
+    min_density = 0.10
     num_patch_per_img = 200
 
     # batch x depth x height x width x channel
