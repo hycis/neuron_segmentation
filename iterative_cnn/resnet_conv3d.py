@@ -61,7 +61,7 @@ def train():
     d, h, w = 20, 20, 20
     min_density = 0.1
     num_patch_per_img = 200
-
+    factor = 0.5
     # batch x depth x height x width x channel
     # X_train = np.random.rand(1000, 20, 32, 32, 1)
     # M_train = np.random.rand(1000, 20, 32, 32, 1)
@@ -86,11 +86,11 @@ def train():
 
     train_cost = tf.reduce_mean((M_ph - M_train_s)**2)
     train_iou = iou(M_ph, tf.to_float(M_train_s>min_density))
-    train_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_train_s>min_density/2))
+    train_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_train_s>min_density * factor))
     # train_cost = iou(M_ph, M_train_s)
     valid_cost = tf.reduce_mean((M_ph - M_valid_s)**2)
     valid_iou = iou(M_ph, tf.to_float(M_valid_s>min_density))
-    valid_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_valid_s>min_density/2))
+    valid_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_valid_s>min_density * factor))
 
     # data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
     # data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
