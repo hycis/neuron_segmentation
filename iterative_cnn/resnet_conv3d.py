@@ -85,10 +85,11 @@ def train():
 
     train_cost = tf.reduce_mean((M_ph - M_train_s)**2)
     train_iou = iou(M_ph, tf.to_float(M_train_s>min_density))
+    train_f1 = tg.cost.image_f1(M_ph, M_train_s>min_density)
     # train_cost = iou(M_ph, M_train_s)
     valid_cost = tf.reduce_mean((M_ph - M_valid_s)**2)
     valid_iou = iou(M_ph, tf.to_float(M_valid_s>min_density))
-    valid_f1 = binary_f1(M_ph, M_valid_s > min_density)
+    valid_f1 = tg.cost.image_f1(M_ph, M_valid_s>min_density)
 
     # data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
     # data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
@@ -108,18 +109,22 @@ def train():
             n_exp = 0
             train_mse_score = 0
             train_iou_score = 0
+            train_f1_score = 0
             # for data_train in blks_train:
             for X_batch, M_batch in blks_train:
                 feed_dict={X_ph:X_batch, M_ph:M_batch}
                 sess.run(optimizer, feed_dict=feed_dict)
                 train_mse_score += sess.run(train_cost, feed_dict=feed_dict) * len(X_batch)
                 train_iou_score += sess.run(train_iou, feed_dict=feed_dict) * len(X_batch)
+                train_f1_score += sess.run(train_f1, feed_dict=feed_dict) * len(X_batch)
                 n_exp += len(X_batch)
                 pbar.update(n_exp)
             train_mse_score /= n_exp
             print('mean train mse:', train_mse_score)
             train_iou_score /= n_exp
             print('mean train iou:', train_iou_score)
+            train_f1_score /= n_exp
+            print('mean train f1:', train_f1_score)
 
 
             print('..validating')
