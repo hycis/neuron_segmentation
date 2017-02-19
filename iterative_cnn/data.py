@@ -320,11 +320,10 @@ class DataBlks(object):
         X_patches = np.concatenate(X_patches)
         y_patches = np.concatenate(y_patches)
 
-        ridx = np.random.shuffle(np.arange(len(X_patches)))
-        import pdb; pdb.set_trace()
+        ridx = np.arange(len(X_patches))
+        np.random.shuffle(ridx)
         X_patches = X_patches[ridx]
         y_patches = y_patches[ridx]
-        import pdb; pdb.set_trace()
         print('X shape', X_patches.shape)
         print('y shape', y_patches.shape)
         return tg.SequentialIterator(X_patches, y_patches, batchsize=self.batchsize)
