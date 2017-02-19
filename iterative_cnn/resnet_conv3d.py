@@ -61,7 +61,7 @@ def train():
     d, h, w = 20, 20, 20
     min_density = 0.1
     num_patch_per_img = 200
-    factor = 1.5
+    factor = 3
     # batch x depth x height x width x channel
     # X_train = np.random.rand(1000, 20, 32, 32, 1)
     # M_train = np.random.rand(1000, 20, 32, 32, 1)
