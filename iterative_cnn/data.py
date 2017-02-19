@@ -291,7 +291,7 @@ class DataBlks(object):
                 print('after shrinked:', X_npy.shape)
 
 
-                import pdb; pdb.set_trace()
+                # import pdb; pdb.set_trace()
                 # print('X unique', np.unique(X_npy))
                 X_npy = X_npy / 255.0
                 y_npy = np.expand_dims(np.load(yin), -1)
@@ -368,7 +368,7 @@ class DataBlks(object):
 
         img_patches = np.asarray(img_patches)
         lbl_patches = np.asarray(lbl_patches)
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         return img_patches, lbl_patches
 
 
