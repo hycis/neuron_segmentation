@@ -295,7 +295,18 @@ class DataBlks(object):
                 # print('X unique', np.unique(X_npy))
                 X_npy /= 255
                 y_npy = np.expand_dims(np.load(yin), -1)
-                y_npy = y_npy[x_f:-x_b, y_f:-y_b, z_f:-z_b, :]
+
+                    y_npy = y_npy[x_f:-x_b, y_f:-y_b, z_f:-z_b, :]
+
+
+                y_npy = y_npy[x_f:, y_f:, z_f:, :]
+                if x_b > 0:
+                    y_npy = y_npy[:-x_b, :, :, :]
+                if y_b > 0:
+                    y_npy = y_npy[:, :-y_b, :, :]
+                if z_b > 0:
+                    y_npy = y_npy[:, :, :-z_b, :]
+
 
                 print('y_npy after shrinked:', y_npy.shape)
                 # print('y unique', np.unique(y_npy))
