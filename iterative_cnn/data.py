@@ -296,7 +296,7 @@ class DataBlks(object):
                 X_npy /= 255
                 y_npy = np.expand_dims(np.load(yin), -1)
 
-                    y_npy = y_npy[x_f:-x_b, y_f:-y_b, z_f:-z_b, :]
+                    # y_npy = y_npy[x_f:-x_b, y_f:-y_b, z_f:-z_b, :]
 
 
                 y_npy = y_npy[x_f:, y_f:, z_f:, :]
