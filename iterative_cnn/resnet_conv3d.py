@@ -59,7 +59,7 @@ def train():
 
     batchsize = 64
     learning_rate = 0.001
-    max_epoch = 100
+    max_epoch = 1000
     epoch_look_back = None
     percent_decrease = 0.01
     d, h, w = 20, 20, 20
