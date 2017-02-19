@@ -15,9 +15,9 @@ class ResNet(Template):
         self.blocks = []
         for _ in range(self.num_blocks):
             layers = []
-            layers.append(Conv3D(input_channels=1, num_filters=4, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
+            layers.append(Conv3D(input_channels=1, num_filters=8, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
             layers.append(RELU())
-            layers.append(Conv3D(input_channels=4, num_filters=1, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
+            layers.append(Conv3D(input_channels=8, num_filters=1, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
             layers.append(RELU())
             self.blocks.append(layers)
 
@@ -59,7 +59,7 @@ def train():
     percent_decrease = 0.01
     d, h, w = 50, 50, 50
     min_density = 0.0
-    num_patch_per_img = 1000
+    num_patch_per_img = 200
 
     # batch x depth x height x width x channel
     # X_train = np.random.rand(1000, 20, 32, 32, 1)
