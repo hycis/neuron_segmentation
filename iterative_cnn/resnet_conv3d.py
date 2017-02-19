@@ -84,10 +84,10 @@ def train():
     M_valid_s = model.test_fprop(X_ph)
 
     train_cost = tf.reduce_mean((M_ph - M_train_s)**2)
-    train_iou = iou(M_ph, M_train_s)
+    train_iou = iou(M_ph, M_train_s>min_density)
     # train_cost = iou(M_ph, M_train_s)
     valid_cost = tf.reduce_mean((M_ph - M_valid_s)**2)
-    valid_iou = iou(M_ph, M_valid_s)
+    valid_iou = iou(M_ph, M_valid_s>min_density)
     # valid_f1 = binary_f1(M_ph, M_valid_s > 0.1)
 
     # data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
