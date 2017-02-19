@@ -85,6 +85,7 @@ def train():
     train_cost = tf.reduce_mean((M_ph - M_train_s)**2)
     # train_cost = iou(M_ph, M_train_s)
     valid_cost = tf.reduce_mean((M_ph - M_valid_s)**2)
+    valid_iou = iou(M_ph, M_valid_s)
     # valid_f1 = binary_f1(M_ph, M_valid_s > 0.1)
 
     # data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
@@ -120,13 +121,19 @@ def train():
             n_exp = 0
             valid_mse_score = 0
             # for data_valid in blks_valid:
+            valid_iou_score = 0
             for X_batch, M_batch in blks_valid:
                 feed_dict={X_ph:X_batch, M_ph:M_batch}
                 valid_mse_score += sess.run(valid_cost, feed_dict=feed_dict) * len(X_batch)
+                valid_iou_score += sess.run(valid_iou, feed_dict=feed_dict) * len(X_batch)
                 n_exp += len(X_batch)
                 pbar.update(n_exp)
             valid_mse_score /= n_exp
             print('mean valid mse:', valid_mse_score)
+
+            valid_iou_score /= n_exp
+            print('mean valid iou:', valid_iou_score)
+
 
             if es.continue_learning(valid_error=valid_mse_score):
                 print('epoch', epoch)
