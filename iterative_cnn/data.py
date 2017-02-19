@@ -249,28 +249,40 @@ class DataBlks(object):
                 X_npy = np.expand_dims(np.load(Xin), -1)
 
                 print('before shrinked:', X_npy.shape)
+                x_f = 0
+                x_b = 0
+                y_f = 0
+                y_b = 0
+                z_f = 0
+                z_b = 0
                 while True:
                     shrinked = False
                     if X_npy[:10, :, :, :].sum() == 0:
                         X_npy =  X_npy[10:, :, :, :]
                         shrinked = True
+                        x_f += 10
                     if X_npy[-10:, :, :, :].sum() == 0:
                         X_npy = X_npy[:-10, :, :, :]
                         shrinked = True
+                        x_b += 10
 
                     if X_npy[:, :10, :, :].sum() == 0:
                         X_npy =  X_npy[:, 10:, :, :]
                         shrinked = True
+                        y_f += 10
                     if X_npy[:, -10:, :, :].sum() == 0:
                         X_npy = X_npy[:, :-10, :, :]
                         shrinked = True
+                        y_b += 10
 
                     if X_npy[:, :, :10, :].sum() == 0:
                         X_npy =  X_npy[:, :, 10:, :]
                         shrinked = True
+                        z_f += 10
                     if X_npy[:, :, -10:, :].sum() == 0:
                         X_npy = X_npy[:, :, :-10, :]
                         shrinked = True
+                        z_b += 10
 
                     if not shrinked:
                         break
@@ -284,10 +296,13 @@ class DataBlks(object):
 
 
                 # import pdb; pdb.set_trace()
-                print('X unique', np.unique(X_npy))
+                # print('X unique', np.unique(X_npy))
                 X_npy /= 255
                 y_npy = np.expand_dims(np.load(yin), -1)
-                print('y unique', np.unique(y_npy))
+                y_npy = [x_f:x_b, y_f:y_b, z_f:z_b, :]
+                print('y_npy after shrinked:', y_npy.shape)
+                # print('y unique', np.unique(y_npy))
+                import pdb; pdb.set_trace()
                 y_npy /= 100
             X_patch, y_patch = self.extract_patches(X_npy, y_npy)
             del X_npy, y_npy
