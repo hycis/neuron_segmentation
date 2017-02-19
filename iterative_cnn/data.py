@@ -364,6 +364,7 @@ class DataBlks(object):
         img_patches = np.asarray(img_patches)
         lbl_patches = np.asarray(lbl_patches)
         ridx = np.random.shuffle(np.arange(len(img_patches)))
+        import pdb; pdb.set_trace()
         img_patches = img_patches[ridx]
         lbl_patches = lbl_patches[ridx]
         return img_patches, lbl_patches
