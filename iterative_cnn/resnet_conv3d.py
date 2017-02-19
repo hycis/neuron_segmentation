@@ -53,7 +53,7 @@ def iou(ytrue, ypred):
 def train():
 
     batchsize = 64
-    learning_rate = 0.01
+    learning_rate = 0.001
     max_epoch = 100
     epoch_look_back = None
     percent_decrease = 0.01
