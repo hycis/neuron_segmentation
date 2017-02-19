@@ -334,8 +334,9 @@ class DataBlks(object):
         print('density:', density)
         # import pdb; pdb.set_trace()
         num_patch_per_img = np.prod(X_npy.shape) / (self.height*self.width*self.depth)
-        print('number patches:', num_patch_per_img)
+        print('number patches before:', num_patch_per_img)
         num_patch_per_img = 1000 if num_patch_per_img > 1000 else num_patch_per_img
+        print('number patches picked:', num_patch_per_img)
         while count < num_patch_per_img:
             y = np.random.randint(0, h-self.height)
             x = np.random.randint(0, w-self.width)
