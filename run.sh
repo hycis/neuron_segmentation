@@ -49,7 +49,7 @@ cp $SCRIPT $SAVDIR
 # echo $CPDIR
 # eval "$CPDIR"
 
-CMD="CUDA_VISIBLE_DEVICES=$GPU nohup python3 $SCRIPT &> $SAVDIR/log.out &"
+CMD="CUDA_VISIBLE_DEVICES=$GPU nohup python $SCRIPT &> $SAVDIR/log.out &"
 echo $CMD
 eval "$CMD"
 # CUDA_VISIBLE_DEVICES=$GPU nohup python3 $SCRIPT &> $DT &
