@@ -84,6 +84,7 @@ def train():
     M_valid_s = model.test_fprop(X_ph)
 
     train_cost = tf.reduce_mean((M_ph - M_train_s)**2)
+    train_iou = iou(M_ph, M_train_s)
     # train_cost = iou(M_ph, M_train_s)
     valid_cost = tf.reduce_mean((M_ph - M_valid_s)**2)
     valid_iou = iou(M_ph, M_valid_s)
@@ -106,15 +107,19 @@ def train():
             pbar = ProgressBar(len(blks_train))
             n_exp = 0
             train_mse_score = 0
+            train_iou_score = 0
             # for data_train in blks_train:
             for X_batch, M_batch in blks_train:
                 feed_dict={X_ph:X_batch, M_ph:M_batch}
                 sess.run(optimizer, feed_dict=feed_dict)
                 train_mse_score += sess.run(train_cost, feed_dict=feed_dict) * len(X_batch)
+                train_iou_score += sess.run(train_iou, feed_dict=feed_dict) * len(X_batch)
                 n_exp += len(X_batch)
                 pbar.update(n_exp)
             train_mse_score /= n_exp
             print('mean train mse:', train_mse_score)
+            train_iou_score /= n_exp
+            print('mean train iou:', train_iou_score)
 
 
             print('..validating')
