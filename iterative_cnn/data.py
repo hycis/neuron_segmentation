@@ -340,8 +340,9 @@ class DataBlks(object):
             # if lbl_crop.mean() > 0:
             if np.isnan(lbl_crop.mean()):
                 import pdb; pdb.set_trace()
-            print('patch mean:', lbl_crop.mean())
+
             if lbl_crop.mean() > self.min_density:
+                print('patch mean:', lbl_crop.mean())
                 # import pdb; pdb.set_trace()
                 lbl_patches.append(lbl_crop)
                 img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
