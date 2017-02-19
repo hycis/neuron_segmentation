@@ -337,6 +337,7 @@ class DataBlks(object):
         print('number patches before:', num_patch_per_img)
         # num_patch_per_img = 1000 if num_patch_per_img > 1000 else num_patch_per_img
         num_patch_per_img /= 100
+        num_patch_per_img = num_patch_per_img * density * 1000
         print('number patches picked:', num_patch_per_img)
         ttl_num_patches_tried = 0
         while count < num_patch_per_img:
