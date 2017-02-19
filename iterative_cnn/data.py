@@ -324,7 +324,7 @@ class DataBlks(object):
         # import pdb; pdb.set_trace()
         X_patches = X_patches[ridx]
         y_patches = y_patches[ridx]
-
+        import pdb; pdb.set_trace()
         print('X shape', X_patches.shape)
         print('y shape', y_patches.shape)
         return tg.SequentialIterator(X_patches, y_patches, batchsize=self.batchsize)
