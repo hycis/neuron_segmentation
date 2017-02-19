@@ -58,7 +58,7 @@ def train():
     epoch_look_back = None
     percent_decrease = 0.01
     d, h, w = 10, 10, 10
-    min_density = 0.05
+    min_density = 0.0
 
     # batch x depth x height x width x channel
     # X_train = np.random.rand(1000, 20, 32, 32, 1)

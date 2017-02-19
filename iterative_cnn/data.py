@@ -274,7 +274,7 @@ class DataBlks(object):
 
                     if not shrinked:
                         break
-                    print('after shrinked:', X_npy.shape)
+                    # print('after shrinked:', X_npy.shape)
 
                 print('after shrinked:', X_npy.shape)
 
@@ -283,7 +283,7 @@ class DataBlks(object):
 
 
 
-                import pdb; pdb.set_trace()
+                # import pdb; pdb.set_trace()
                 print('X unique', np.unique(X_npy))
                 X_npy /= 255
                 y_npy = np.expand_dims(np.load(yin), -1)
@@ -307,7 +307,7 @@ class DataBlks(object):
         lbl_patches = []
         count = 0
         d, h, w, c = X_npy.shape
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         while count < self.num_patch_per_img:
             y = np.random.randint(0, h-self.height)
             x = np.random.randint(0, w-self.width)
