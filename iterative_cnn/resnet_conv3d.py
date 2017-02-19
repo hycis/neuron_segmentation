@@ -17,7 +17,7 @@ class ResNet(Template):
             layers = []
             layers.append(Conv3D(input_channels=1, num_filters=16, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
             layers.append(RELU())
-            layers.append(BatchNormalization(layer_type='conv', dim=16, short_memory=0.01))
+            # layers.append(BatchNormalization(layer_type='conv', dim=16, short_memory=0.01))
             layers.append(Conv3D(input_channels=16, num_filters=1, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
             layers.append(RELU())
             self.blocks.append(layers)
