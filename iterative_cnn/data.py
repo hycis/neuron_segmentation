@@ -274,6 +274,7 @@ class DataBlks(object):
 
                     if not shrinked:
                         break
+                    print('after shrinked:', X_npy.shape)
 
                 print('after shrinked:', X_npy.shape)
 
