@@ -368,6 +368,7 @@ class DataBlks(object):
 
         img_patches = np.asarray(img_patches)
         lbl_patches = np.asarray(lbl_patches)
+        import pdb; pdb.set_trace()
         return img_patches, lbl_patches
 
 
