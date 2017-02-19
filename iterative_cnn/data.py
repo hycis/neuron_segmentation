@@ -331,7 +331,9 @@ class DataBlks(object):
         count = 0
         d, h, w, c = X_npy.shape
         # import pdb; pdb.set_trace()
-        while count < self.num_patch_per_img:
+        num_patch_per_img = np.prod(X_npy.shape) / (self.height*self.width*self.depth)
+        print('number patches:', num_patch_per_img)
+        while count < num_patch_per_img:
             y = np.random.randint(0, h-self.height)
             x = np.random.randint(0, w-self.width)
             z = np.random.randint(0, d-self.depth)
