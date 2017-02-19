@@ -53,11 +53,11 @@ def iou(ytrue, ypred):
 def train():
 
     batchsize = 64
-    learning_rate = 0.001
+    learning_rate = 0.01
     max_epoch = 100
     epoch_look_back = None
     percent_decrease = 0.01
-    d, h, w = 10, 10, 10
+    d, h, w = 20, 20, 20
     min_density = 0.0
 
     # batch x depth x height x width x channel
