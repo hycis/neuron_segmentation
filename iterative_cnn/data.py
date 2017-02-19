@@ -247,6 +247,7 @@ class DataBlks(object):
         for X_path, y_path in self.paths:
             with open(X_path) as Xin, open(y_path) as yin:
                 X_npy = np.expand_dims(np.load(Xin), -1)
+                import pdb; pdb.set_trace()
                 print('X unique', np.unique(X_npy))
                 X_npy /= 255
                 y_npy = np.expand_dims(np.load(yin), -1)
