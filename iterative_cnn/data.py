@@ -360,7 +360,12 @@ class DataBlks(object):
                 # print count
             ttl_num_patches_tried += 1
         print('number of patches tried:', ttl_num_patches_tried)
-        return np.asarray(img_patches), np.asarray(lbl_patches)
+
+        img_patches = np.asarray(img_patches)
+        lbl_patches = np.asarray(lbl_patches)
+        ridx = np.random.shuffle(np.arange(len(img_patches)))
+        img_patches = img_patches[ridx]
+        lbl_patches = lbl_patches[ridx]
 
 
     def next(self):
