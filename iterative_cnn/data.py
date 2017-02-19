@@ -291,9 +291,9 @@ class DataBlks(object):
                 print('after shrinked:', X_npy.shape)
 
 
-                # import pdb; pdb.set_trace()
+                import pdb; pdb.set_trace()
                 # print('X unique', np.unique(X_npy))
-                X_npy /= 255.0
+                X_npy = X_npy / 255.0
                 y_npy = np.expand_dims(np.load(yin), -1)
 
                     # y_npy = y_npy[x_f:-x_b, y_f:-y_b, z_f:-z_b, :]
