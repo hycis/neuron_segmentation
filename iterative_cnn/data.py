@@ -366,6 +366,7 @@ class DataBlks(object):
         ridx = np.random.shuffle(np.arange(len(img_patches)))
         img_patches = img_patches[ridx]
         lbl_patches = lbl_patches[ridx]
+        return img_patches, lbl_patches
 
 
     def next(self):
