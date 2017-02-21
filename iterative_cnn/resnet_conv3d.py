@@ -7,6 +7,7 @@ import tensorflow as tf
 import numpy as np
 from data import datablks
 from datetime import datetime
+import os
 
 
 class ResNet(Template):
