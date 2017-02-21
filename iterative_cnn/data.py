@@ -375,7 +375,7 @@ class DataBlks(object):
                 count += 1
                 # print count
             ttl_num_patches_tried += 1
-            if ttl_num_patches_tried > 4*num_patch_per_img:
+            if ttl_num_patches_tried > 8 * num_patch_per_img:
                 break
         print('number of patches tried:', ttl_num_patches_tried)
         print('number of patches collected:', len(img_patches))
