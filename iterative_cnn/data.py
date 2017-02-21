@@ -207,7 +207,7 @@ class Skin(object):
 
 class DataBlks(object):
 
-    def __init__(self, paths, depth, height, width, batchsize, min_density, num_patch_per_img):
+    def __init__(self, paths, depth, height, width, batchsize, min_density, num_patch_per_img, rotate=False):
         self.paths = paths
         self.depth = depth
         self.height = height
@@ -215,7 +215,7 @@ class DataBlks(object):
         self.batchsize = batchsize
         self.min_density = min_density
         self.num_patch_per_img = num_patch_per_img
-
+        self.rotate = rotate
 
     # def __iter__(self):
         # self.path_iter = iter(self.paths)
@@ -358,9 +358,13 @@ class DataBlks(object):
             if lbl_crop.mean() > self.min_density:
                 # print('patch mean:', lbl_crop.mean())
                 # import pdb; pdb.set_trace()
-                lbl_patches.append(lbl_crop)
                 img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
-                img_patches.append(img_crop)
+                if self.rotate:
+                    lbl_patches += list(rotations12(lbl_crop))
+                    img_patches += list(rotations12(img_crop))
+                else:
+                    lbl_patches.append(lbl_crop)
+                    img_patches.append(img_crop)
                 count += 1
                 # print count
             ttl_num_patches_tried += 1
@@ -379,6 +383,15 @@ class DataBlks(object):
         return self.num_patch_per_img * len(self.paths)
 
 
+def rotations12(polycube):
+    for i in range(3):
+        polycube = np.transpose(polycube, (1, 2, 0))
+        for angle in range(4):
+            polycube = np.rot90(polycube)
+            yield polycube
+
+
+
 def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
     dname = '/home/malyatha'
     train_paths = [("{dir}/train_npy/{num}.npy".format(dir=dname, num=num),
@@ -388,8 +401,8 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
                     "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
                     for num in range(1, 17)]
 
-    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img)
-    blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=0, num_patch_per_img=num_patch_per_img)
+    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=True)
+    blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
     return blk_train.make_data(), blk_valid.make_data()
 
 
@@ -399,5 +412,7 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
 
 if __name__ == '__main__':
     # data = Iris()
-    data = Skin(train_valid=[5,1], shuffle=True, batchsize=32)
-    data.make_data()
+    # data = Skin(train_valid=[5,1], shuffle=True, batchsize=32)
+    # data.make_data()
+    # import pdb; pdb.set_trace()
+    # print(list(rotations12(np.random.rand(10,10,10))))
