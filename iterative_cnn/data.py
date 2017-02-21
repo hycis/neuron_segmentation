@@ -415,4 +415,4 @@ if __name__ == '__main__':
     # data = Skin(train_valid=[5,1], shuffle=True, batchsize=32)
     # data.make_data()
     # import pdb; pdb.set_trace()
-    # print(list(rotations12(np.random.rand(10,10,10))))
+    print(list(rotations12(np.random.rand(10,10,10))))
