@@ -317,6 +317,7 @@ class DataBlks(object):
             X_patches.append(X_patch)
             y_patches.append(y_patch)
             print("{} done! of {}".format(X_path, len(self.paths)))
+        import pdb; pdb.set_trace()
         X_patches = np.concatenate(X_patches)
         y_patches = np.concatenate(y_patches)
 
@@ -360,7 +361,7 @@ class DataBlks(object):
                 # import pdb; pdb.set_trace()
                 img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
                 if self.rotate:
-                    import pdb; pdb.set_trace()
+                    # import pdb; pdb.set_trace()
                     lbl_patches += [lbl[:,:,:,np.newaxis] for lbl in rotations12(lbl_crop[:,:,:,0])][:6]
                     img_patches += [img[:,:,:,np.newaxis] for img in rotations12(img_crop[:,:,:,0])][:6]
                 else:
