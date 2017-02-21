@@ -420,7 +420,7 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
                     "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
                     for num in range(1, 18)]
 
-    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
+    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=True)
     blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
     return blk_train.make_data(), blk_valid.make_data()
 
