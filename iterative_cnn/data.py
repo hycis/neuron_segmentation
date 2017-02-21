@@ -338,14 +338,15 @@ class DataBlks(object):
         lbl_patches = []
         count = 0
         d, h, w, c = X_npy.shape
-        density = X_npy.mean()
+        positives = X_npy.sum()
         print('density:', density)
         # import pdb; pdb.set_trace()
         num_patch_per_img = np.prod(X_npy.shape) / (self.height*self.width*self.depth)
         print('number patches before:', num_patch_per_img)
         # num_patch_per_img = 1000 if num_patch_per_img > 1000 else num_patch_per_img
         # num_patch_per_img = num_patch_per_img 100
-        num_patch_per_img_to_collect = num_patch_per_img / 100 * density * 200
+        num_patch_per_img_to_collect = num_patch_per_img * positives * 0.001
+        import pdb; pdb.set_trace()
         print('number patches to collect:', num_patch_per_img_to_collect)
         ttl_num_patches_tried = 0
         while count < num_patch_per_img_to_collect:
