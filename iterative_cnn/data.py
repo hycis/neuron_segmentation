@@ -346,7 +346,7 @@ class DataBlks(object):
         # num_patch_per_img = 1000 if num_patch_per_img > 1000 else num_patch_per_img
         num_patch_per_img /= 100
         num_patch_per_img = num_patch_per_img * density * 200
-        print('number patches picked:', num_patch_per_img)
+        print('number patches to collect:', num_patch_per_img)
         ttl_num_patches_tried = 0
         while count < num_patch_per_img:
             y = np.random.randint(0, h-self.height)
@@ -372,9 +372,10 @@ class DataBlks(object):
                 count += 1
                 # print count
             ttl_num_patches_tried += 1
-            if ttl_num_patches_tried > 4*num_patch_per_img:
+            if ttl_num_patches_tried > 10*num_patch_per_img:
                 break
         print('number of patches tried:', ttl_num_patches_tried)
+        print('number of patches collected:', len(img_patches))
 
         img_patches = np.asarray(img_patches)
         lbl_patches = np.asarray(lbl_patches)
@@ -407,7 +408,7 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
                     "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
                     for num in range(1, 18)]
 
-    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
+    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=True)
     blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
     return blk_train.make_data(), blk_valid.make_data()
 
