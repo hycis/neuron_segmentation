@@ -369,6 +369,8 @@ class DataBlks(object):
                 count += 1
                 # print count
             ttl_num_patches_tried += 1
+            if ttl_num_patches_tried > 2*num_patch_per_img:
+                break
         print('number of patches tried:', ttl_num_patches_tried)
 
         img_patches = np.asarray(img_patches)
@@ -397,10 +399,10 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
     dname = '/home/malyatha'
     train_paths = [("{dir}/train_npy/{num}.npy".format(dir=dname, num=num),
                     "{dir}/train_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
-                    for num in range(1, 17)]
+                    for num in range(1, 18)]
     valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
                     "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
-                    for num in range(1, 17)]
+                    for num in range(1, 18)]
 
     blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=True)
     blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)

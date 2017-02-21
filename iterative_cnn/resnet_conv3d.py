@@ -6,6 +6,7 @@ from tensorgraph import ProgressBar
 import tensorflow as tf
 import numpy as np
 from data import datablks
+from datetime import datetime
 
 
 class ResNet(Template):
@@ -70,7 +71,13 @@ def train():
     num_patch_per_img = 200
     factor = 1
 
-    # dt = 
+    dt = datetime.now()
+    dt = dt.strftime('%Y%m%d_%H%M_%S%f')
+
+    dt = './save/' + dt
+    if not os.path.exists(dt):
+        os.makedirs(dt)
+    save_path = dt + '/model.tf'
     # batch x depth x height x width x channel
     # X_train = np.random.rand(1000, 20, 32, 32, 1)
     # M_train = np.random.rand(1000, 20, 32, 32, 1)
@@ -107,6 +114,7 @@ def train():
     optimizer = tf.train.AdamOptimizer(learning_rate).minimize(train_cost)
 
     with tf.Session() as sess:
+        saver = tf.train.Saver()
         init = tf.global_variables_initializer()
         sess.run(init)
         es = tg.EarlyStopper(max_epoch=max_epoch,
@@ -166,6 +174,8 @@ def train():
                 print('valid error so far:', valid_mse_score)
                 print('best epoch last update:', es.best_epoch_last_update)
                 print('best valid last update:', es.best_valid_last_update)
+                saver.save(sess, save_path)
+                print('model saved to:', save_path)
 
             else:
                 print('training done!')
