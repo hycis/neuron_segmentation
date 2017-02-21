@@ -314,7 +314,7 @@ class DataBlks(object):
                 y_npy /= 100
             X_patch, y_patch = self.extract_patches(X_npy, y_npy)
             del X_npy, y_npy
-            if len(X_batch) > 0:
+            if len(X_patch) > 0:
                 X_patches.append(X_patch)
                 y_patches.append(y_patch)
             print("{} done! of {}".format(X_path, len(self.paths)))
