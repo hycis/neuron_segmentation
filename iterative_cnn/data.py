@@ -347,7 +347,7 @@ class DataBlks(object):
         # num_patch_per_img = num_patch_per_img 100
         vol = self.height * self.width * self.depth
         pos = vol * self.min_density
-        num_patch_per_img_to_collect =  positives / (pos + 1)
+        num_patch_per_img_to_collect =  positives * 4 / (pos + 1)
         # import pdb; pdb.set_trace()
         print('number patches to collect:', num_patch_per_img_to_collect)
         ttl_num_patches_tried = 0
@@ -367,8 +367,8 @@ class DataBlks(object):
                 img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
                 if self.rotate:
                     # import pdb; pdb.set_trace()
-                    lbl_patches += [lbl[:,:,:,np.newaxis] for lbl in rotations12(lbl_crop[:,:,:,0])][:6]
-                    img_patches += [img[:,:,:,np.newaxis] for img in rotations12(img_crop[:,:,:,0])][:6]
+                    lbl_patches += [lbl[:,:,:,np.newaxis] for lbl in rotations6(lbl_crop[:,:,:,0])]
+                    img_patches += [img[:,:,:,np.newaxis] for img in rotations6(img_crop[:,:,:,0])]
                 else:
                     lbl_patches.append(lbl_crop)
                     img_patches.append(img_crop)
@@ -399,6 +399,15 @@ def rotations12(polycube):
         for angle in range(4):
             polycube = np.rot90(polycube)
             yield polycube
+
+
+def rotations6(polycube):
+    for i in range(3):
+        polycube = np.transpose(polycube, (1, 2, 0))
+        for angle in range(2):
+            polycube = np.rot90(polycube)
+            yield polycube
+
 
 
 
