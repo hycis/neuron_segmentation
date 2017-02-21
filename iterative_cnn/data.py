@@ -360,6 +360,7 @@ class DataBlks(object):
                 # import pdb; pdb.set_trace()
                 img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
                 if self.rotate:
+                    import pdb; pdb.set_trace()
                     lbl_patches += list(rotations12(lbl_crop))
                     img_patches += list(rotations12(img_crop))
                 else:
