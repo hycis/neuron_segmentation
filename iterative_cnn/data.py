@@ -383,10 +383,10 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
     dname = '/home/malyatha'
     train_paths = [("{dir}/train_npy/{num}.npy".format(dir=dname, num=num),
                     "{dir}/train_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
-                    for num in range(1, 13)]
-    valid_paths = [("{dir}/train_npy/{num}.npy".format(dir=dname, num=num),
-                    "{dir}/train_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
-                    for num in range(13, 17)]
+                    for num in range(1, 17)]
+    valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
+                    "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
+                    for num in range(1, 17)]
 
     blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img)
     blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=0, num_patch_per_img=num_patch_per_img)
