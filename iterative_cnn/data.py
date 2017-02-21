@@ -344,9 +344,9 @@ class DataBlks(object):
         num_patch_per_img = np.prod(X_npy.shape) / (self.height*self.width*self.depth)
         print('number patches before:', num_patch_per_img)
         # num_patch_per_img = 1000 if num_patch_per_img > 1000 else num_patch_per_img
-        num_patch_per_img /= 100
-        num_patch_per_img = num_patch_per_img * density * 200
-        print('number patches to collect:', num_patch_per_img)
+        # num_patch_per_img = num_patch_per_img 100
+        num_patch_per_img_to_collect = num_patch_per_img / 100 * density * 200
+        print('number patches to collect:', num_patch_per_img_to_collect)
         ttl_num_patches_tried = 0
         while count < num_patch_per_img:
             y = np.random.randint(0, h-self.height)
@@ -372,7 +372,7 @@ class DataBlks(object):
                 count += 1
                 # print count
             ttl_num_patches_tried += 1
-            if ttl_num_patches_tried > 10*num_patch_per_img:
+            if ttl_num_patches_tried > 4*num_patch_per_img:
                 break
         print('number of patches tried:', ttl_num_patches_tried)
         print('number of patches collected:', len(img_patches))
