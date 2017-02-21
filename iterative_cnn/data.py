@@ -348,7 +348,7 @@ class DataBlks(object):
         num_patch_per_img_to_collect = num_patch_per_img / 100 * density * 200
         print('number patches to collect:', num_patch_per_img_to_collect)
         ttl_num_patches_tried = 0
-        while count < num_patch_per_img:
+        while count < num_patch_per_img_to_collect:
             y = np.random.randint(0, h-self.height)
             x = np.random.randint(0, w-self.width)
             z = np.random.randint(0, d-self.depth)
