@@ -339,13 +339,13 @@ class DataBlks(object):
         count = 0
         d, h, w, c = X_npy.shape
         positives = X_npy.sum()
-        print('density:', density)
+        print('positives:', positives)
         # import pdb; pdb.set_trace()
         num_patch_per_img = np.prod(X_npy.shape) / (self.height*self.width*self.depth)
         print('number patches before:', num_patch_per_img)
         # num_patch_per_img = 1000 if num_patch_per_img > 1000 else num_patch_per_img
         # num_patch_per_img = num_patch_per_img 100
-        num_patch_per_img_to_collect = num_patch_per_img * positives * 0.001
+        num_patch_per_img_to_collect =  positives * 0.001
         import pdb; pdb.set_trace()
         print('number patches to collect:', num_patch_per_img_to_collect)
         ttl_num_patches_tried = 0
