@@ -314,10 +314,11 @@ class DataBlks(object):
                 y_npy /= 100
             X_patch, y_patch = self.extract_patches(X_npy, y_npy)
             del X_npy, y_npy
-            X_patches.append(X_patch)
-            y_patches.append(y_patch)
+            if len(X_batch) > 0:
+                X_patches.append(X_patch)
+                y_patches.append(y_patch)
             print("{} done! of {}".format(X_path, len(self.paths)))
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         X_patches = np.concatenate(X_patches)
         y_patches = np.concatenate(y_patches)
 
@@ -405,7 +406,7 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
                     "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
                     for num in range(1, 18)]
 
-    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=True)
+    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
     blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
     return blk_train.make_data(), blk_valid.make_data()
 
