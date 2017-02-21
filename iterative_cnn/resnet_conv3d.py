@@ -63,12 +63,14 @@ def train():
     batchsize = 64
     learning_rate = 0.001
     max_epoch = 1000
-    epoch_look_back = None
+    epoch_look_back = 3
     percent_decrease = 0.01
     d, h, w = 20, 20, 20
     min_density = 0.1
     num_patch_per_img = 200
     factor = 1
+
+    dt = 
     # batch x depth x height x width x channel
     # X_train = np.random.rand(1000, 20, 32, 32, 1)
     # M_train = np.random.rand(1000, 20, 32, 32, 1)

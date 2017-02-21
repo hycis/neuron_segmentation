@@ -361,8 +361,8 @@ class DataBlks(object):
                 img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
                 if self.rotate:
                     # import pdb; pdb.set_trace()
-                    lbl_patches += [lbl[:,:,:,np.newaxis] for lbl in rotations12(lbl_crop[:,:,:,0])]
-                    img_patches += [img[:,:,:,np.newaxis] for img in rotations12(img_crop[:,:,:,0])]
+                    lbl_patches += [lbl[:,:,:,np.newaxis] for lbl in rotations12(lbl_crop[:,:,:,0])][:6]
+                    img_patches += [img[:,:,:,np.newaxis] for img in rotations12(img_crop[:,:,:,0])][:6]
                 else:
                     lbl_patches.append(lbl_crop)
                     img_patches.append(img_crop)
