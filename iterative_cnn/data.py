@@ -347,7 +347,7 @@ class DataBlks(object):
         # num_patch_per_img = num_patch_per_img 100
         vol = self.height * self.width * self.depth
         pos = vol * self.min_density
-        num_patch_per_img_to_collect =  positives * 4 / (pos + 1)
+        num_patch_per_img_to_collect =  positives / (pos + 1)
         # import pdb; pdb.set_trace()
         print('number patches to collect:', num_patch_per_img_to_collect)
         ttl_num_patches_tried = 0
