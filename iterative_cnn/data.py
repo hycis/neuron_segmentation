@@ -318,6 +318,7 @@ class DataBlks(object):
                 X_patches.append(X_patch)
                 y_patches.append(y_patch)
             print("{} done! of {}".format(X_path, len(self.paths)))
+            print('---------')
         # import pdb; pdb.set_trace()
         X_patches = np.concatenate(X_patches)
         y_patches = np.concatenate(y_patches)
