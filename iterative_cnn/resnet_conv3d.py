@@ -70,7 +70,6 @@ def train():
     d, h, w = 20, 20, 20
     min_density = 0.01
     num_patch_per_img = 200
-    factor = 1
 
     dt = datetime.now()
     dt = dt.strftime('%Y%m%d_%H%M_%S%f')
@@ -102,12 +101,12 @@ def train():
     M_valid_s = model.test_fprop(X_ph)
 
     train_cost = tf.reduce_mean((M_ph - M_train_s)**2)
-    train_iou = iou(M_ph, tf.to_float(M_train_s>min_density))
-    train_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_train_s>min_density * factor))
+    train_iou = iou(M_ph, tf.to_float(M_train_s > 0.5))
+    train_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_train_s > 0.5))
     # train_cost = iou(M_ph, M_train_s)
     valid_cost = tf.reduce_mean((M_ph - M_valid_s)**2)
-    valid_iou = iou(M_ph, tf.to_float(M_valid_s>min_density))
-    valid_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_valid_s>min_density * factor))
+    valid_iou = iou(M_ph, tf.to_float(M_valid_s > 0.5))
+    valid_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_valid_s > 0.5))
 
     # data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
     # data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
