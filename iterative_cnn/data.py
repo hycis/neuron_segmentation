@@ -347,7 +347,7 @@ class DataBlks(object):
         # num_patch_per_img = num_patch_per_img 100
         vol = self.height * self.width * self.depth
         # pos = vol * self.min_density
-        num_patch_per_img_to_collect = int(np.prod(X_npy.shape) / vol * 8)
+        num_patch_per_img_to_collect = int(np.prod(X_npy.shape) / vol)
         # num_patch_per_img_to_collect =  positives / (pos + 1)
         # import pdb; pdb.set_trace()
         print('number patches to collect:', num_patch_per_img_to_collect)
@@ -421,7 +421,7 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
                     "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
                     for num in range(1, 18)]
 
-    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=True)
+    blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
     blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
     return blk_train.make_data(), blk_valid.make_data()
 

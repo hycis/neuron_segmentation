@@ -66,7 +66,7 @@ def train():
     learning_rate = 0.001
     max_epoch = 1000
     epoch_look_back = 3
-    percent_decrease = 0.01
+    percent_decrease = 0.0
     d, h, w = 20, 20, 20
     min_density = 0.01
     num_patch_per_img = 200
