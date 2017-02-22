@@ -17,16 +17,16 @@ class ResNet(Template):
         self.blocks = []
         for _ in range(self.num_blocks):
             layers = []
-            layers.append(Conv3D(input_channels=1, num_filters=8, kernel_size=(3,3,3), stride=(1,1,1), padding='SAME'))
+            layers.append(Conv3D(input_channels=1, num_filters=8, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
             layers.append(RELU())
             # layers.append(BatchNormalization(layer_type='conv', dim=8, short_memory=0.01))
-            layers.append(Conv3D(input_channels=8, num_filters=8, kernel_size=(3,3,3), stride=(1,1,1), padding='SAME'))
+            layers.append(Conv3D(input_channels=8, num_filters=8, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
             layers.append(RELU())
             # layers.append(BatchNormalization(layer_type='conv', dim=8, short_memory=0.01))
-            layers.append(Conv3D(input_channels=8, num_filters=8, kernel_size=(3,3,3), stride=(1,1,1), padding='SAME'))
-            layers.append(RELU())
+            # layers.append(Conv3D(input_channels=8, num_filters=8, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
+            # layers.append(RELU())
             # layers.append(BatchNormalization(layer_type='conv', dim=8, short_memory=0.01))
-            layers.append(Conv3D(input_channels=8, num_filters=1, kernel_size=(3,3,3), stride=(1,1,1), padding='SAME'))
+            layers.append(Conv3D(input_channels=8, num_filters=1, kernel_size=(5,5,5), stride=(1,1,1), padding='SAME'))
             layers.append(RELU())
             self.blocks.append(layers)
         self.blocks.append([Conv3D(input_channels=1, num_filters=1, kernel_size=(3,3,3), stride=(1,1,1), padding='SAME')])
@@ -68,7 +68,7 @@ def train():
     epoch_look_back = 3
     percent_decrease = 0.01
     d, h, w = 20, 20, 20
-    min_density = 0.05
+    min_density = 0.01
     num_patch_per_img = 200
     factor = 1
 
