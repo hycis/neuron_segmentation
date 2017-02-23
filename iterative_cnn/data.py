@@ -286,18 +286,11 @@ class DataBlks(object):
 
                     if not shrinked:
                         break
-                    # print('after shrinked:', X_npy.shape)
 
                 print('after shrinked:', X_npy.shape)
 
-
-                # import pdb; pdb.set_trace()
-                # print('X unique', np.unique(X_npy))
                 X_npy = X_npy / 255.0
                 y_npy = np.expand_dims(np.load(yin), -1)
-
-                    # y_npy = y_npy[x_f:-x_b, y_f:-y_b, z_f:-z_b, :]
-
 
                 y_npy = y_npy[x_f:, y_f:, z_f:, :]
                 if x_b > 0:
@@ -309,8 +302,6 @@ class DataBlks(object):
 
 
                 print('y_npy after shrinked:', y_npy.shape)
-                # print('y unique', np.unique(y_npy))
-                # import pdb; pdb.set_trace()
                 y_npy /= 100
             X_patch, y_patch = self.extract_patches(X_npy, y_npy)
             del X_npy, y_npy
@@ -358,16 +349,11 @@ class DataBlks(object):
             z = np.random.randint(0, d-self.depth)
 
             lbl_crop = y_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
-            # if lbl_crop.mean() > 0:
-            # if np.isnan(lbl_crop.mean()):
-            #     import pdb; pdb.set_trace()
+            img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
 
-            if lbl_crop.mean() > self.min_density:
-                # print('patch mean:', lbl_crop.mean())
-                # import pdb; pdb.set_trace()
-                img_crop = X_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
+            if img_crop.mean() > self.min_density:
+
                 if self.rotate:
-                    # import pdb; pdb.set_trace()
                     lbl_patches += [lbl[:,:,:,np.newaxis] for lbl in rotations6(lbl_crop[:,:,:,0])]
                     img_patches += [img[:,:,:,np.newaxis] for img in rotations6(img_crop[:,:,:,0])]
                 else:

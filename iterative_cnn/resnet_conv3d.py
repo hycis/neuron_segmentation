@@ -60,6 +60,13 @@ def iou(ytrue, ypred):
     return -tf.reduce_mean(IOU)
 
 
+def model():
+    model = tg.Sequential()
+    model.add(ResNet(num_blocks=5))
+    model.add(Sigmoid())
+    return model
+
+
 def train():
 
     batchsize = 64
@@ -86,16 +93,13 @@ def train():
     # M_valid = np.random.rand(1000, 20, 32, 32, 1)
 
 
-    X_ph = tf.placeholder('float32', [None, d, h, w, 1])
-    M_ph = tf.placeholder('float32', [None, d, h, w, 1])
+
 
     blks_train, blks_valid = datablks(d, h, w, batchsize, min_density, num_patch_per_img)
 
-
-    model = tg.Sequential()
-    model.add(ResNet(num_blocks=5))
-    model.add(Sigmoid())
-
+    X_ph = tf.placeholder('float32', [None, d, h, w, 1])
+    M_ph = tf.placeholder('float32', [None, d, h, w, 1])
+    model = model()
 
     M_train_s = model.train_fprop(X_ph)
     M_valid_s = model.test_fprop(X_ph)
@@ -183,50 +187,72 @@ def train():
 
 
 
-# def test():
-#
-#     batchsize = 64
-#     learning_rate = 0.001
-#     max_epoch = 1000
-#     epoch_look_back = 3
-#     percent_decrease = 0.0
-#     d, h, w = 20, 20, 20
-#     min_density = 0.01
-#     num_patch_per_img = 200
-#
-#     dt = datetime.now()
-#     dt = dt.strftime('%Y%m%d_%H%M_%S%f')
-#
-#     dt = './save/' + dt
-#     if not os.path.exists(dt):
-#         os.makedirs(dt)
-#     save_path = dt + '/model.tf'
-#     # batch x depth x height x width x channel
-#     # X_train = np.random.rand(1000, 20, 32, 32, 1)
-#     # M_train = np.random.rand(1000, 20, 32, 32, 1)
-#     #
-#     # X_valid = np.random.rand(1000, 20, 32, 32, 1)
-#     # M_valid = np.random.rand(1000, 20, 32, 32, 1)
-#
-#
-#     X_ph = tf.placeholder('float32', [None, d, h, w, 1])
-#     M_ph = tf.placeholder('float32', [None, d, h, w, 1])
-#
-#     blks_train, blks_valid = datablks(d, h, w, batchsize, min_density, num_patch_per_img)
-#
-#
-#     model = tg.Sequential()
-#     model.add(ResNet(num_blocks=5))
-#     model.add(Sigmoid())
-#
-#
-#     M_train_s = model.train_fprop(X_ph)
-#     M_valid_s = model.test_fprop(X_ph)
-#
-#     with tf.Session() as sess:
-#         saver = tf.train.Saver()
-#         md = saver.load(save_path)
+def pad_zero(X_npy, x_pad, y_pad, z_pad):
+    X_npy = np.concatenate([X_npy, np.zeros((z_pad, 1, 1, 1))], axis=0)
+    X_npy = np.concatenate([X_npy, np.zeros((1, y_pad, 1, 1))], axis=1)
+    X_npy = np.concatenate([X_npy, np.zeros((1, 1, x_pad, 1))], axis=2)
+    return X_npy
+
+
+def test():
+
+    batchsize = 64
+    learning_rate = 0.001
+    max_epoch = 1000
+    epoch_look_back = 3
+    percent_decrease = 0.0
+    d, h, w = 20, 20, 20
+    min_density = 0.01
+    num_patch_per_img = 200
+
+    # dt = datetime.now()
+    # dt = dt.strftime('%Y%m%d_%H%M_%S%f')
+    dt = '123456'
+
+    dt = './save/' + dt
+    if not os.path.exists(dt):
+        os.makedirs(dt)
+    save_path = dt + '/model.tf'
+
+
+    X_ph = tf.placeholder('float32', [None, d, h, w, 1])
+    M_ph = tf.placeholder('float32', [None, d, h, w, 1])
+    model = model()
+
+
+    M_train_s = model.train_fprop(X_ph)
+    M_valid_s = model.test_fprop(X_ph)
+
+    dname = '/home/malyatha'
+    valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
+                    "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
+                    for num in range(1, 18)]
+
+    with tf.Session() as sess:
+        saver = tf.train.Saver()
+        saver.restore(sess, save_path)
+
+        for X_path, y_path in valid_paths:
+            with open(X_path) as Xin, open(y_path) as yin:
+                X_npy = np.expand_dims(np.load(Xin), -1)
+                y_npy = np.expand_dims(np.load(yin), -1)
+                x, y, z, _ = X_npy.shape
+                z_pad = z % d
+                y_pad = y % h
+                x_pad = x % w
+                print('before pad X shape:', X.shape)
+                X_npy = pad_zero(X_npy, x_pad, y_pad, z_pad)
+                y_npy = pad_zero(y_npy, x_pad, y_pad, z_pad)
+                print('after pad X shape:\n', X.shape)
+
+
+
+# z:z+self.depth, y:y+self.height, x:x+self.width, -1
+
+        # sess.run(M_train_s)
+
 
 
 if __name__ == '__main__':
-    train()
+    # train()
+    test()
