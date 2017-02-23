@@ -240,10 +240,10 @@ def test():
                 z_pad = z % d
                 y_pad = y % h
                 x_pad = x % w
-                print('before pad X shape:', X.shape)
+                print('before pad X shape:', X_npy.shape)
                 X_npy = pad_zero(X_npy, x_pad, y_pad, z_pad)
                 y_npy = pad_zero(y_npy, x_pad, y_pad, z_pad)
-                print('after pad X shape:\n', X.shape)
+                print('after pad X shape:\n', X_npy.shape)
 
 
 
