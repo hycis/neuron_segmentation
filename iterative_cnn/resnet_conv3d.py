@@ -217,11 +217,11 @@ def test():
 
     X_ph = tf.placeholder('float32', [None, d, h, w, 1])
     M_ph = tf.placeholder('float32', [None, d, h, w, 1])
-    model = model()
+    seq = model()
 
 
-    M_train_s = model.train_fprop(X_ph)
-    M_valid_s = model.test_fprop(X_ph)
+    M_train_s = seq.train_fprop(X_ph)
+    M_valid_s = seq.test_fprop(X_ph)
 
     dname = '/home/malyatha'
     valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
