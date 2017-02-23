@@ -240,7 +240,7 @@ def test():
             with open(X_path) as Xin, open(y_path) as yin:
                 X_npy = np.expand_dims(np.load(Xin), -1)
                 y_npy = np.expand_dims(np.load(yin), -1)
-                x, y, z, _ = X_npy.shape
+                z, y, x, _ = X_npy.shape
                 z_pad = d - z % d
                 y_pad = h - y % h
                 x_pad = w - x % w
