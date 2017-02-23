@@ -207,7 +207,7 @@ def test():
 
     # dt = datetime.now()
     # dt = dt.strftime('%Y%m%d_%H%M_%S%f')
-    dt = '20170222_235507'
+    dt = '20170222_2355_08364127'
 
     dt = './save/' + dt
     if not os.path.exists(dt):
