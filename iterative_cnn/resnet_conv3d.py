@@ -242,8 +242,8 @@ def test():
                 y_npy = np.expand_dims(np.load(yin), -1)
                 x, y, z, _ = X_npy.shape
                 z_pad = d - z % d
-                y_pad = y - y % h
-                x_pad = x - x % w
+                y_pad = h - y % h
+                x_pad = w - x % w
                 print('before pad X shape:', X_npy.shape)
                 X_npy = pad_zero(X_npy, x_pad, y_pad, z_pad)
                 y_npy = pad_zero(y_npy, x_pad, y_pad, z_pad)
