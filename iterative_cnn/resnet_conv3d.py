@@ -203,10 +203,10 @@ def test():
 
     def pad_zero(X_npy, x_pad, y_pad, z_pad):
         # import pdb; pdb.set_trace()
-        x_d, x_h, x_w = X_npy.shape
-        X_npy = np.concatenate([X_npy, np.zeros((z_pad, x_h, x_w, 1))], axis=0)
-        X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, y_pad, x_w, 1))], axis=1)
-        X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, x_h+y_pad, x_pad, 1))], axis=2)
+        x_d, x_h, x_w, x_c = X_npy.shape
+        X_npy = np.concatenate([X_npy, np.zeros((z_pad, x_h, x_w, x_c))], axis=0)
+        X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, y_pad, x_w, x_c))], axis=1)
+        X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, x_h+y_pad, x_pad, x_c))], axis=2)
         return X_npy
 
     # dt = datetime.now()
@@ -241,9 +241,9 @@ def test():
                 X_npy = np.expand_dims(np.load(Xin), -1)
                 y_npy = np.expand_dims(np.load(yin), -1)
                 x, y, z, _ = X_npy.shape
-                z_pad = z % d
-                y_pad = y % h
-                x_pad = x % w
+                z_pad = d - z % d
+                y_pad = y - y % h
+                x_pad = x - x % w
                 print('before pad X shape:', X_npy.shape)
                 X_npy = pad_zero(X_npy, x_pad, y_pad, z_pad)
                 y_npy = pad_zero(y_npy, x_pad, y_pad, z_pad)
