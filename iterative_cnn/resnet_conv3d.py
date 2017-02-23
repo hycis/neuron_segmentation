@@ -202,10 +202,11 @@ def test():
     num_patch_per_img = 200
 
     def pad_zero(X_npy, x_pad, y_pad, z_pad):
-        import pdb; pdb.set_trace()
-        X_npy = np.concatenate([X_npy, np.zeros((z_pad, h, w, 1))], axis=0)
-        X_npy = np.concatenate([X_npy, np.zeros((d+z_pad, y_pad, w, 1))], axis=1)
-        X_npy = np.concatenate([X_npy, np.zeros((d+z_pad, h+y_pad, x_pad, 1))], axis=2)
+        # import pdb; pdb.set_trace()
+        x_d, x_h, x_w = X_npy.shape
+        X_npy = np.concatenate([X_npy, np.zeros((z_pad, x_h, x_w, 1))], axis=0)
+        X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, y_pad, x_w, 1))], axis=1)
+        X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, x_h+y_pad, x_pad, 1))], axis=2)
         return X_npy
 
     # dt = datetime.now()
