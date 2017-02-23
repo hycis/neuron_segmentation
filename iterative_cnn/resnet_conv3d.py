@@ -187,11 +187,7 @@ def train():
 
 
 
-def pad_zero(X_npy, x_pad, y_pad, z_pad):
-    X_npy = np.concatenate([X_npy, np.zeros((z_pad, 1, 1, 1))], axis=0)
-    X_npy = np.concatenate([X_npy, np.zeros((1, y_pad, 1, 1))], axis=1)
-    X_npy = np.concatenate([X_npy, np.zeros((1, 1, x_pad, 1))], axis=2)
-    return X_npy
+
 
 
 def test():
@@ -204,6 +200,12 @@ def test():
     d, h, w = 20, 20, 20
     min_density = 0.01
     num_patch_per_img = 200
+
+    def pad_zero(X_npy, x_pad, y_pad, z_pad):
+        X_npy = np.concatenate([X_npy, np.zeros((z_pad, h, w, 1))], axis=0)
+        X_npy = np.concatenate([X_npy, np.zeros((d, y_pad, w, 1))], axis=1)
+        X_npy = np.concatenate([X_npy, np.zeros((d, h, x_pad, 1))], axis=2)
+        return X_npy
 
     # dt = datetime.now()
     # dt = dt.strftime('%Y%m%d_%H%M_%S%f')
