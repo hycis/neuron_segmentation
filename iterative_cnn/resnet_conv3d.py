@@ -215,8 +215,10 @@ def train(dt):
                     for i in range(0, z, d):
                         for j in range(0, y, h):
                             for k in range(0, x, w):
-                                ypred = sess.run(feed_dict={X_ph:X_npy[i:i+d, j:j+h , k:k+w, :]})
                                 ytrue = y_npy[i:i+d, j:j+h , k:k+w, :]
+                                ypred = sess.run(feed_dict={X_ph:X_npy[i:i+d, j:j+h , k:k+w, :],
+                                                            y_ph:ytrue})
+
                                 if i+d == z:
                                     ypred = ypred[:d-z_pad,:,:,:]
                                 if j+h == y:
