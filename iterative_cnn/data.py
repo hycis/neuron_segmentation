@@ -318,8 +318,8 @@ class DataBlks(object):
         np.random.shuffle(ridx)
         X_patches = X_patches[ridx]
         y_patches = y_patches[ridx]
-        print('X shape', X_patches.shape)
-        print('y shape', y_patches.shape)
+        print('X patch shape', X_patches.shape)
+        print('y patch shape', y_patches.shape)
         return tg.SequentialIterator(X_patches, y_patches, batchsize=self.batchsize)
 
 

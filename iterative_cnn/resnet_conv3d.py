@@ -158,11 +158,11 @@ def train(dt):
                 n_exp += len(X_batch)
                 pbar.update(n_exp)
             train_mse_score /= n_exp
-            print('mean train mse:', train_mse_score)
+            print('average patch train mse:', train_mse_score)
             train_iou_score /= n_exp
-            print('mean train iou:', train_iou_score)
+            print('average patch train iou:', train_iou_score)
             train_f1_score /= n_exp
-            print('mean train f1:', train_f1_score)
+            print('average patch train f1:', train_f1_score)
 
 
             print('..validating')
@@ -180,13 +180,13 @@ def train(dt):
                 n_exp += len(X_batch)
                 pbar.update(n_exp)
             valid_mse_score /= n_exp
-            print('mean valid mse:', valid_mse_score)
+            print('average patch valid mse:', valid_mse_score)
 
             valid_iou_score /= n_exp
-            print('mean valid iou:', valid_iou_score)
+            print('average patch valid iou:', valid_iou_score)
 
             valid_f1_score /= n_exp
-            print('mean valid f1:', valid_f1_score)
+            print('average patch valid f1:', valid_f1_score)
 
             ############################[ Testing ]#############################
             print('full image testing')
@@ -239,9 +239,9 @@ def train(dt):
                     print('image precision:', precision)
                     print('image recall:', recall)
                     print('image f1:', f1)
-            print('average precision:', precision_mean / len(valid_paths))
-            print('average recall:', recall_mean / len(valid_paths))
-            print('average f1:', f1_mean / len(valid_paths))
+            print('average image precision:', precision_mean / len(valid_paths))
+            print('average image recall:', recall_mean / len(valid_paths))
+            print('average image f1:', f1_mean / len(valid_paths))
 
 
             if es.continue_learning(valid_error=valid_mse_score):
