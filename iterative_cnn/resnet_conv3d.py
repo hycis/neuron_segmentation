@@ -141,11 +141,11 @@ def test(valid_paths, M_valid_s, sess, threshold):
 def pad_zero(X_npy, x_pad, y_pad, z_pad):
     x_d, x_h, x_w, x_c = X_npy.shape
     try:
-        if x_pad > 0:
+        if z_pad > 0:
             X_npy = np.concatenate([X_npy, np.zeros((z_pad, x_h, x_w, x_c))], axis=0)
         if y_pad > 0:
             X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, y_pad, x_w, x_c))], axis=1)
-        if z_pad > 0:
+        if x_pad > 0:
             X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, x_h+y_pad, x_pad, x_c))], axis=2)
     except:
         import pdb; pdb.set_trace()
