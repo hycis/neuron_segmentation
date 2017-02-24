@@ -151,7 +151,7 @@ def load_model_test(modelpath):
 
 def train(dt):
 
-    batchsize = 64
+    batchsize = 128
     learning_rate = 0.001
     max_epoch = 1000
     epoch_look_back = 3
