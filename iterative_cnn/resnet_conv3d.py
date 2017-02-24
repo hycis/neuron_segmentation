@@ -146,6 +146,7 @@ def pad_zero(X_npy, x_pad, y_pad, z_pad):
 
 
 def load_model_test(modelpath):
+    pass
 
 
 def train(dt):
