@@ -253,7 +253,7 @@ def train(dt):
                                 P += ytrue.sum()
                                 TP += (ypred * ytrue).sum()
                                 TPnFP += ypred.sum()
-                    import pdb; pdb.set_trace()
+                    # import pdb; pdb.set_trace()
                     TPnFP = TPnFP if TPnFP > 0 else 1
                     P = P if P > 0 else 1
                     precision = float(TP) / TPnFP
