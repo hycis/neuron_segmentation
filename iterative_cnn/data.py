@@ -207,7 +207,8 @@ class Skin(object):
 
 class DataBlks(object):
 
-    def __init__(self, paths, depth, height, width, batchsize, min_density, num_patch_per_img, rotate=False):
+    def __init__(self, paths, depth, height, width, batchsize, min_density,
+                 num_patch_per_img, rotate=False, img_scan_factor=3):
         self.paths = paths
         self.depth = depth
         self.height = height
@@ -216,6 +217,7 @@ class DataBlks(object):
         self.min_density = min_density
         self.num_patch_per_img = num_patch_per_img
         self.rotate = rotate
+        self.img_scan_factor = img_scan_factor
 
     # def __iter__(self):
         # self.path_iter = iter(self.paths)
@@ -332,13 +334,13 @@ class DataBlks(object):
         positives = X_npy.sum()
         print('positives:', positives)
         # import pdb; pdb.set_trace()
-        num_patch_per_img = np.prod(X_npy.shape) / (self.height*self.width*self.depth)
+        num_patch_per_img = np.prod(X_npy.shape) / (self.height*self.width*self.depth) * self.
         print('number patches before:', num_patch_per_img)
         # num_patch_per_img = 1000 if num_patch_per_img > 1000 else num_patch_per_img
         # num_patch_per_img = num_patch_per_img 100
         vol = self.height * self.width * self.depth
         # pos = vol * self.min_density
-        num_patch_per_img_to_collect = int(np.prod(X_npy.shape) / vol)
+        num_patch_per_img_to_collect = int(np.prod(X_npy.shape) / vol) * self.img_scan_factor
         # num_patch_per_img_to_collect =  positives / (pos + 1)
         # import pdb; pdb.set_trace()
         print('number patches per image:', num_patch_per_img_to_collect)
