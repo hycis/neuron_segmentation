@@ -75,7 +75,7 @@ def train(dt):
     epoch_look_back = 3
     percent_decrease = 0.0
     d, h, w = 11, 13, 17
-    min_density = 0.01
+    min_density = 0.1
     num_patch_per_img = 200
 
     def pad_zero(X_npy, x_pad, y_pad, z_pad):
@@ -151,7 +151,7 @@ def train(dt):
             # for data_train in blks_train:
             for X_batch, M_batch in blks_train:
                 feed_dict={X_ph:X_batch, M_ph:M_batch}
-                import pdb; pdb.set_trace()
+                # import pdb; pdb.set_trace()
                 sess.run(optimizer, feed_dict=feed_dict)
                 train_mse_score += sess.run(train_cost, feed_dict=feed_dict) * len(X_batch)
                 train_iou_score += sess.run(train_iou, feed_dict=feed_dict) * len(X_batch)
