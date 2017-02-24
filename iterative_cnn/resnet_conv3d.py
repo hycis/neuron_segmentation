@@ -67,6 +67,90 @@ def model():
     return model
 
 
+
+def test(valid_paths):
+    with tf.Session() as sess:
+        print('full image testing')
+        f1_mean = 0
+        precision_mean = 0
+        recall_mean = 0
+        for X_path, y_path in valid_paths:
+            with open(X_path) as Xin, open(y_path) as yin:
+                print('path:', X_path)
+                X_npy = np.expand_dims(np.load(Xin), -1)
+                y_npy = np.expand_dims(np.load(yin), -1)
+                z, y, x, _ = X_npy.shape
+                z_pad = d - z % d if z%d > 0 else 0
+                y_pad = h - y % h if y%h > 0 else 0
+                x_pad = w - x % w if x%w > 0 else 0
+                print('before pad X shape:', X_npy.shape)
+                X_npy = pad_zero(X_npy, x_pad, y_pad, z_pad)
+                y_npy = pad_zero(y_npy, x_pad, y_pad, z_pad)
+                print('after pad X shape: {}\n'.format(X_npy.shape))
+                z, y, x, _ = X_npy.shape
+
+                P = 0
+                TP = 0
+                TPnFP = 0
+                for i in range(0, z, d):
+                    for j in range(0, y, h):
+                        for k in range(0, x, w):
+                            ytrue = y_npy[i:i+d, j:j+h , k:k+w, :]
+                            ypred = sess.run(M_valid_s, feed_dict={X_ph:X_npy[np.newaxis, i:i+d, j:j+h , k:k+w, :]})
+                            ypred = ypred[0]
+                            # print(ytrue.shape)
+                            # print(ypred.shape)
+
+
+                            if i+d == z:
+                                # print('d')
+                                ypred = ypred[:d-z_pad,:,:,:]
+                                ytrue = ytrue[:d-z_pad,:,:,:]
+                                # print(ytrue.shape)
+                                # print(ypred.shape)
+                                # print()
+                            if j+h == y:
+                                # print('h')
+                                ypred = ypred[:,:h-y_pad,:,:]
+                                ytrue = ytrue[:,:h-y_pad,:,:]
+                                # print(ytrue.shape)
+                                # print(ypred.shape)
+                                # print()
+                            if k+w == x:
+                                # print('w')
+                                ypred = ypred[:,:,:w-x_pad,:]
+                                ytrue = ytrue[:,:,:w-x_pad,:]
+                                # print(ytrue.shape)
+                                # print(ypred.shape)
+                                # print()
+                            # print(ytrue.shape)
+                            # print(ypred.shape)
+                            # print('--------')
+                            # print()
+
+                            ypred = (ypred > threshold).astype(int)
+                            P += ytrue.sum()
+                            TP += (ypred * ytrue).sum()
+                            TPnFP += ypred.sum()
+                # import pdb; pdb.set_trace()
+                TPnFP = TPnFP if TPnFP > 0 else 1
+                P = P if P > 0 else 1
+                precision = float(TP) / TPnFP
+                recall = float(TP) / P
+                pnr = precision + recall
+                pnr = pnr if pnr > 0 else 1e-6
+                f1 = 2 * precision * recall / pnr
+                precision_mean += precision
+                f1_mean += f1
+                recall_mean += recall
+                print('image precision:', precision)
+                print('image recall:', recall)
+                print('image f1:', f1)
+                import pdb; pdb.set_trace()
+        print('average image precision:', precision_mean / len(valid_paths))
+        print('average image recall:', recall_mean / len(valid_paths))
+        print('average image f1:', f1_mean / len(valid_paths))
+
 def train(dt):
 
     batchsize = 64
