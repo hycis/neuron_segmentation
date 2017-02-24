@@ -68,7 +68,7 @@ def model():
 
 
 
-def test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess, threshold):
+def test(valid_paths, depth, height, width, M_valid_s, sess, threshold):
 
     print('full image testing')
     f1_mean = 0
@@ -80,9 +80,9 @@ def test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess, threshold):
             X_npy = np.expand_dims(np.load(Xin), -1) / 255.0
             y_npy = np.expand_dims(np.load(yin), -1) / 100.0
             z, y, x, _ = X_npy.shape
-            z_pad = d - z % d if z%d > 0 else 0
-            y_pad = h - y % h if y%h > 0 else 0
-            x_pad = w - x % w if x%w > 0 else 0
+            z_pad = depth- z % depthif z%depth> 0 else 0
+            y_pad = height - y % height if y%height > 0 else 0
+            x_pad = width - x % width if x%width > 0 else 0
             print('before pad X shape:', X_npy.shape)
             X_npy = pad_zero(X_npy, x_pad, y_pad, z_pad)
             y_npy = pad_zero(y_npy, x_pad, y_pad, z_pad)
@@ -92,22 +92,22 @@ def test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess, threshold):
             P = 0
             TP = 0
             TPnFP = 0
-            for i in range(0, z, d):
-                for j in range(0, y, h):
-                    for k in range(0, x, w):
-                        ytrue = y_npy[i:i+d, j:j+h , k:k+w, :]
-                        ypred = sess.run(M_valid_s, feed_dict={X_ph:X_npy[np.newaxis, i:i+d, j:j+h , k:k+w, :]})
+            for i in range(0, z, depth):
+                for j in range(0, y, height):
+                    for k in range(0, x, width):
+                        ytrue = y_npy[i:i+depth, j:j+height, k:k+width, :]
+                        ypred = sess.run(M_valid_s, feed_dict={X_ph:X_npy[np.newaxis, i:i+depth, j:j+height, k:k+width, :]})
                         ypred = ypred[0]
 
-                        if i+d == z:
-                            ypred = ypred[:d-z_pad,:,:,:]
-                            ytrue = ytrue[:d-z_pad,:,:,:]
-                        if j+h == y:
-                            ypred = ypred[:,:h-y_pad,:,:]
-                            ytrue = ytrue[:,:h-y_pad,:,:]
-                        if k+w == x:
-                            ypred = ypred[:,:,:w-x_pad,:]
-                            ytrue = ytrue[:,:,:w-x_pad,:]
+                        if i+depth== z:
+                            ypred = ypred[:depth-z_pad,:,:,:]
+                            ytrue = ytrue[:depth-z_pad,:,:,:]
+                        if j+height == y:
+                            ypred = ypred[:,:height-y_pad,:,:]
+                            ytrue = ytrue[:,:height-y_pad,:,:]
+                        if k+width == x:
+                            ypred = ypred[:,:,:width-x_pad,:]
+                            ytrue = ytrue[:,:,:width-x_pad,:]
 
 
                         ypred = (ypred > threshold).astype(int)
@@ -146,7 +146,14 @@ def pad_zero(X_npy, x_pad, y_pad, z_pad):
 
 
 def load_model_test(modelpath):
-    pass
+    threshold = 0.5
+    with tf.Session() as sess:
+        seq = model()
+        ypred_sb = seq.test_fprop(X_ph)
+        saver = tf.train.Saver()
+        saver.restore(sess, modelpath)
+        test(valid_paths, ypred_sb, sess, threshold)
+
 
 
 def train(dt):
@@ -156,7 +163,8 @@ def train(dt):
     max_epoch = 1000
     epoch_look_back = 3
     percent_decrease = 0.0
-    d, h, w = 20, 20, 20
+
+    depth, height, width = 20, 20, 20
     min_density = 0.03
     num_patch_per_img = 200
     threshold = 0.6
@@ -168,20 +176,11 @@ def train(dt):
     if not os.path.exists(dt):
         os.makedirs(dt)
     save_path = dt + '/model.tf'
-    # batch x depth x height x width x channel
-    # X_train = np.random.rand(1000, 20, 32, 32, 1)
-    # M_train = np.random.rand(1000, 20, 32, 32, 1)
-    #
-    # X_valid = np.random.rand(1000, 20, 32, 32, 1)
-    # M_valid = np.random.rand(1000, 20, 32, 32, 1)
 
+    blks_train, blks_valid, valid_paths = datablks(depth, height, width, batchsize, min_density, num_patch_per_img)
 
-
-
-    blks_train, blks_valid, valid_paths = datablks(d, h, w, batchsize, min_density, num_patch_per_img)
-
-    X_ph = tf.placeholder('float32', [None, d, h, w, 1])
-    M_ph = tf.placeholder('float32', [None, d, h, w, 1])
+    X_ph = tf.placeholder('float32', [None, depth, height, width, 1])
+    M_ph = tf.placeholder('float32', [None, depth, height, width, 1])
     seq = model()
 
     M_train_s = seq.train_fprop(X_ph)
@@ -194,9 +193,6 @@ def train(dt):
     valid_cost = tf.reduce_mean((M_ph - M_valid_s)**2)
     valid_iou = iou(M_ph, tf.to_float(M_valid_s > threshold))
     valid_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_valid_s > threshold))
-
-    # data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
-    # data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
 
     optimizer = tf.train.AdamOptimizer(learning_rate).minimize(train_cost)
 
@@ -259,7 +255,7 @@ def train(dt):
             ############################[ Testing ]#############################
             if epoch % 10 == 0:
                 print('full image testing')
-                test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess, threshold)
+                test(valid_paths, depth, height, width, M_valid_s, sess, threshold)
 
             if es.continue_learning(valid_error=valid_mse_score):
                 print('epoch', epoch)
@@ -278,17 +274,20 @@ def train(dt):
 
 
 if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dt', help='datetime for the initialization of the experiment')
+    global X_ph, M_ph, depth, height, width
 
-    args = parser.parse_args()
-
-    if args.dt:
-        train(args.dt)
-    else:
-        dt = datetime.now()
-        dt = dt.strftime('%Y%m%d_%H%M_%S%f')
-        train(dt)
+    load_model_test('./save/20170225_011620/model.tf')
+    # import argparse
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('--dt', help='datetime for the initialization of the experiment')
+    #
+    # args = parser.parse_args()
+    #
+    # if args.dt:
+    #     train(args.dt)
+    # else:
+    #     dt = datetime.now()
+    #     dt = dt.strftime('%Y%m%d_%H%M_%S%f')
+    #     train(dt)
 
     # test()
