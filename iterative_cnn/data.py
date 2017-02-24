@@ -341,7 +341,7 @@ class DataBlks(object):
         num_patch_per_img_to_collect = int(np.prod(X_npy.shape) / vol)
         # num_patch_per_img_to_collect =  positives / (pos + 1)
         # import pdb; pdb.set_trace()
-        print('number patches to collect:', num_patch_per_img_to_collect)
+        print('number patches per image:', num_patch_per_img_to_collect)
         ttl_num_patches_tried = 0
         while ttl_num_patches_tried < num_patch_per_img_to_collect:
             y = np.random.randint(0, h-self.height)
