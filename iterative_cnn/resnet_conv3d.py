@@ -222,10 +222,13 @@ def train(dt):
 
                                 if i+d == z:
                                     ypred = ypred[:d-z_pad,:,:,:]
+                                    ytrue = ytrue[:d-z_pad,:,:,:]
                                 if j+h == y:
                                     ypred = ypred[:,:h-y_pad,:,:]
+                                    ytrue = ytrue[:d-z_pad,:,:,:]
                                 if k+w == x:
                                     ypred = ypred[:,:,:w-x_pad,:]
+                                    ytrue = ytrue[:d-z_pad,:,:,:]
                                 ypred = (ypred > threshold).astype(int)
                                 P += ytrue.sum()
                                 TP += (ypred * ytrue).sum()
