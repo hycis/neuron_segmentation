@@ -228,21 +228,26 @@ def train(dt):
                                     ypred = ypred[:d-z_pad,:,:,:]
                                     ytrue = ytrue[:d-z_pad,:,:,:]
                                     print(ytrue.shape)
-                                    print(ypred.shape, '\n')
+                                    print(ypred.shape)
+                                    print()
                                 if j+h == y:
                                     print('h')
                                     ypred = ypred[:,:h-y_pad,:,:]
                                     ytrue = ytrue[:d-z_pad,:,:,:]
                                     print(ytrue.shape)
-                                    print(ypred.shape, '\n')
+                                    print(ypred.shape)
+                                    print()
                                 if k+w == x:
                                     print('w')
                                     ypred = ypred[:,:,:w-x_pad,:]
                                     ytrue = ytrue[:d-z_pad,:,:,:]
                                     print(ytrue.shape)
-                                    print(ypred.shape, '\n')
+                                    print(ypred.shape)
+                                    print()
                                 print(ytrue.shape)
-                                print(ypred.shape, '----\n')
+                                print(ypred.shape)
+                                print('--------')
+                                print()
 
                                 ypred = (ypred > threshold).astype(int)
                                 P += ytrue.sum()
