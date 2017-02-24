@@ -219,35 +219,35 @@ def train(dt):
                                 ytrue = y_npy[i:i+d, j:j+h , k:k+w, :]
                                 ypred = sess.run(M_valid_s, feed_dict={X_ph:X_npy[np.newaxis, i:i+d, j:j+h , k:k+w, :]})
                                 ypred = ypred[0]
-                                print(ytrue.shape)
-                                print(ypred.shape)
+                                # print(ytrue.shape)
+                                # print(ypred.shape)
 
 
                                 if i+d == z:
-                                    print('d')
+                                    # print('d')
                                     ypred = ypred[:d-z_pad,:,:,:]
                                     ytrue = ytrue[:d-z_pad,:,:,:]
-                                    print(ytrue.shape)
-                                    print(ypred.shape)
-                                    print()
+                                    # print(ytrue.shape)
+                                    # print(ypred.shape)
+                                    # print()
                                 if j+h == y:
-                                    print('h')
+                                    # print('h')
                                     ypred = ypred[:,:h-y_pad,:,:]
                                     ytrue = ytrue[:,:h-y_pad,:,:]
-                                    print(ytrue.shape)
-                                    print(ypred.shape)
-                                    print()
+                                    # print(ytrue.shape)
+                                    # print(ypred.shape)
+                                    # print()
                                 if k+w == x:
-                                    print('w')
+                                    # print('w')
                                     ypred = ypred[:,:,:w-x_pad,:]
                                     ytrue = ytrue[:,:,:w-x_pad,:]
-                                    print(ytrue.shape)
-                                    print(ypred.shape)
-                                    print()
-                                print(ytrue.shape)
-                                print(ypred.shape)
-                                print('--------')
-                                print()
+                                    # print(ytrue.shape)
+                                    # print(ypred.shape)
+                                    # print()
+                                # print(ytrue.shape)
+                                # print(ypred.shape)
+                                # print('--------')
+                                # print()
 
                                 ypred = (ypred > threshold).astype(int)
                                 P += ytrue.sum()
