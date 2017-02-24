@@ -96,8 +96,12 @@ def test(valid_paths, M_valid_s, sess, threshold):
                 for j in range(0, y, height):
                     for k in range(0, x, width):
                         ytrue = y_npy[i:i+depth, j:j+height, k:k+width, :]
-                        ypred = sess.run(M_valid_s, feed_dict={X_ph:X_npy[np.newaxis, i:i+depth, j:j+height, k:k+width, :]})
-                        ypred = ypred[0]
+                        X = X_npy[i:i+depth, j:j+height, k:k+width, :]
+                        if X.sum() > 0:
+                            ypred = sess.run(M_valid_s, feed_dict={X_ph:X[np.newaxis,:,:,:,:]})
+                            ypred = ypred[0]
+                        else:
+                            ypred = np.zeros_like(X)
 
                         if i+depth == z:
                             ypred = ypred[:depth-z_pad,:,:,:]
