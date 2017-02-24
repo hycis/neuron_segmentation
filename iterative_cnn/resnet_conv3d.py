@@ -218,6 +218,7 @@ def train(dt):
                             for k in range(0, x, w):
                                 ytrue = y_npy[i:i+d, j:j+h , k:k+w, :]
                                 ypred = sess.run(M_valid_s, feed_dict={X_ph:X_npy[np.newaxis, i:i+d, j:j+h , k:k+w, :]})
+                                ypred = ypred[0]
 
                                 if i+d == z:
                                     ypred = ypred[:d-z_pad,:,:,:]
