@@ -68,7 +68,7 @@ def model():
 
 
 
-def test(valid_paths, depth, height, width, M_valid_s, sess, threshold):
+def test(valid_paths, M_valid_s, sess, threshold):
 
     print('full image testing')
     f1_mean = 0
