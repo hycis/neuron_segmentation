@@ -67,19 +67,32 @@ def model():
     return model
 
 
-def train():
+def train(dt):
 
     batchsize = 64
     learning_rate = 0.001
     max_epoch = 1000
     epoch_look_back = 3
     percent_decrease = 0.0
-    d, h, w = 20, 20, 20
+    d, h, w = 11, 13, 17
     min_density = 0.01
     num_patch_per_img = 200
 
-    dt = datetime.now()
-    dt = dt.strftime('%Y%m%d_%H%M_%S%f')
+    def pad_zero(X_npy, x_pad, y_pad, z_pad):
+        # import pdb; pdb.set_trace()
+        x_d, x_h, x_w, x_c = X_npy.shape
+        if x_pad > 0:
+            X_npy = np.concatenate([X_npy, np.zeros((z_pad, x_h, x_w, x_c))], axis=0)
+        if y_pad > 0:
+            X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, y_pad, x_w, x_c))], axis=1)
+        if z_pad > 0:
+            X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, x_h+y_pad, x_pad, x_c))], axis=2)
+        return X_npy
+
+
+
+    # dt = datetime.now()
+    # dt = dt.strftime('%Y%m%d_%H%M_%S%f')
 
     dt = './save/' + dt
     if not os.path.exists(dt):
@@ -172,6 +185,61 @@ def train():
             valid_f1_score /= n_exp
             print('mean valid f1:', valid_f1_score)
 
+            ############################[ Testing ]#############################
+            print('full image testing')
+            f1_mean = 0
+            precision_mean = 0
+            recall_mean = 0
+            for X_path, y_path in valid_paths:
+                with open(X_path) as Xin, open(y_path) as yin:
+                    print('path:', X_path)
+                    X_npy = np.expand_dims(np.load(Xin), -1)
+                    y_npy = np.expand_dims(np.load(yin), -1)
+                    z, y, x, _ = X_npy.shape
+                    z_pad = d - z % d if z%d > 0 else 0
+                    y_pad = h - y % h if y%h > 0 else 0
+                    x_pad = w - x % w if x%w > 0 else 0
+                    print('before pad X shape:', X_npy.shape)
+                    X_npy = pad_zero(X_npy, x_pad, y_pad, z_pad)
+                    y_npy = pad_zero(y_npy, x_pad, y_pad, z_pad)
+                    print('after pad X shape: {}\n'.format(X_npy.shape))
+                    z, y, x, _ = X_npy.shape
+
+                    P = 0
+                    TP = 0
+                    TPnFP = 0
+                    for i in range(0, z, d):
+                        for j in range(0, y, h):
+                            for k in range(0, x, w):
+                                ypred = sess.run(feed_dict={X_ph:X_npy[i:i+d, j:j+h , k:k+w, :]})
+                                ytrue = y_npy[i:i+d, j:j+h , k:k+w, :]
+                                if i+d == z:
+                                    ypred = ypred[:d-z_pad,:,:,:]
+                                if j+h == y:
+                                    ypred = ypred[:,:h-y_pad,:,:]
+                                if k+w == x:
+                                    ypred = ypred[:,:,:w-x_pad,:]
+                                ypred = (ypred > threshold).astype(int)
+                                P += ytrue.sum()
+                                TP += (ypred * ytrue).sum()
+                                TPnFP += ypred.sum()
+                    TPnFP = TPnFP if TPnFP > 0 else 1
+                    P = P if P > 0 else 1
+                    precision = float(TP) / TPnFP
+                    recall = float(TP) / P
+                    pnr = precision + recall
+                    pnr = pnr if pnr > 0 else 1e-6
+                    f1 = 2 * precision * recall / pnr
+                    precision_mean += precision
+                    f1_mean += f1
+                    recall_mean += recall
+                    print('image precision:', precision)
+                    print('image recall:', recall)
+                    print('image f1:', f1)
+            print('average precision:', precision_mean / len(valid_paths))
+            print('average recall:', recall_mean / len(valid_paths))
+            print('average f1:', f1_mean / len(valid_paths))
+
 
             if es.continue_learning(valid_error=valid_mse_score):
                 print('epoch', epoch)
@@ -189,74 +257,10 @@ def train():
 
 
 
-
-def test():
-
-    batchsize = 64
-    learning_rate = 0.001
-    max_epoch = 1000
-    epoch_look_back = 3
-    percent_decrease = 0.0
-    d, h, w = 20, 20, 20
-    min_density = 0.01
-    num_patch_per_img = 200
-
-    def pad_zero(X_npy, x_pad, y_pad, z_pad):
-        # import pdb; pdb.set_trace()
-        x_d, x_h, x_w, x_c = X_npy.shape
-        X_npy = np.concatenate([X_npy, np.zeros((z_pad, x_h, x_w, x_c))], axis=0)
-        X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, y_pad, x_w, x_c))], axis=1)
-        X_npy = np.concatenate([X_npy, np.zeros((x_d+z_pad, x_h+y_pad, x_pad, x_c))], axis=2)
-        return X_npy
-
-    # dt = datetime.now()
-    # dt = dt.strftime('%Y%m%d_%H%M_%S%f')
-    dt = '20170222_2355_08364127'
-
-    dt = './save/' + dt
-    if not os.path.exists(dt):
-        os.makedirs(dt)
-    save_path = dt + '/model.tf'
-
-
-    X_ph = tf.placeholder('float32', [None, d, h, w, 1])
-    M_ph = tf.placeholder('float32', [None, d, h, w, 1])
-    seq = model()
-
-
-    M_train_s = seq.train_fprop(X_ph)
-    M_valid_s = seq.test_fprop(X_ph)
-
-    dname = '/home/malyatha'
-    valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
-                    "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
-                    for num in range(1, 18)]
-
-    with tf.Session() as sess:
-        saver = tf.train.Saver()
-        saver.restore(sess, save_path)
-
-        for X_path, y_path in valid_paths:
-            with open(X_path) as Xin, open(y_path) as yin:
-                X_npy = np.expand_dims(np.load(Xin), -1)
-                y_npy = np.expand_dims(np.load(yin), -1)
-                z, y, x, _ = X_npy.shape
-                z_pad = d - z % d
-                y_pad = h - y % h
-                x_pad = w - x % w
-                print('before pad X shape:', X_npy.shape)
-                X_npy = pad_zero(X_npy, x_pad, y_pad, z_pad)
-                y_npy = pad_zero(y_npy, x_pad, y_pad, z_pad)
-                print('after pad X shape: {}\n'.format(X_npy.shape))
-
-
-
-# z:z+self.depth, y:y+self.height, x:x+self.width, -1
-
-        # sess.run(M_train_s)
-
-
-
 if __name__ == '__main__':
-    # train()
-    test()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dt', required=True, help='datetime for the initialization of the experiment')
+    args = parser.parse_args()
+    train(args.dt)
+    # test()
