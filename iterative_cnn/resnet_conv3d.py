@@ -159,7 +159,11 @@ def load_model_test(modelpath):
         saver.restore(sess, modelpath)
         test(valid_paths, ypred_sb, sess, threshold)
 
-
+def initialize_global_params():
+    global X_ph, M_ph, depth, height, width
+    depth, height, width = 20, 20, 20
+    X_ph = tf.placeholder('float32', [None, depth, height, width, 1])
+    M_ph = tf.placeholder('float32', [None, depth, height, width, 1])
 
 def train(dt):
 
@@ -278,10 +282,7 @@ def train(dt):
 
 
 if __name__ == '__main__':
-    global X_ph, M_ph, depth, height, width
-    depth, height, width = 20, 20, 20
-    X_ph = tf.placeholder('float32', [None, depth, height, width, 1])
-    M_ph = tf.placeholder('float32', [None, depth, height, width, 1])
+    initialize_global_params()
 
     load_model_test('./save/20170225_011620/model.tf')
     # import argparse
