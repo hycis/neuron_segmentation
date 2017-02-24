@@ -164,7 +164,7 @@ def train(dt):
     epoch_look_back = 3
     percent_decrease = 0.0
 
-    depth, height, width = 20, 20, 20
+
     min_density = 0.03
     num_patch_per_img = 200
     threshold = 0.6
@@ -179,8 +179,7 @@ def train(dt):
 
     blks_train, blks_valid, valid_paths = datablks(depth, height, width, batchsize, min_density, num_patch_per_img)
 
-    X_ph = tf.placeholder('float32', [None, depth, height, width, 1])
-    M_ph = tf.placeholder('float32', [None, depth, height, width, 1])
+
     seq = model()
 
     M_train_s = seq.train_fprop(X_ph)
@@ -275,7 +274,10 @@ def train(dt):
 
 if __name__ == '__main__':
     global X_ph, M_ph, depth, height, width
-
+    depth, height, width = 20, 20, 20
+    X_ph = tf.placeholder('float32', [None, depth, height, width, 1])
+    M_ph = tf.placeholder('float32', [None, depth, height, width, 1])
+    
     load_model_test('./save/20170225_011620/model.tf')
     # import argparse
     # parser = argparse.ArgumentParser()
