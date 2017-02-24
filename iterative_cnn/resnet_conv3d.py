@@ -77,6 +77,7 @@ def train(dt):
     d, h, w = 11, 13, 17
     min_density = 0.1
     num_patch_per_img = 200
+    threshold = 0.5
 
     def pad_zero(X_npy, x_pad, y_pad, z_pad):
         # import pdb; pdb.set_trace()
