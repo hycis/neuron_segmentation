@@ -411,7 +411,7 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
 
     blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
     blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
-    return blk_train.make_data(), blk_valid.make_data()
+    return blk_train.make_data(), blk_valid.make_data(), valid_paths
 
 
 

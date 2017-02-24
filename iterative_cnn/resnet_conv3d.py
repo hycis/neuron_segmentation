@@ -108,7 +108,7 @@ def train(dt):
 
 
 
-    blks_train, blks_valid = datablks(d, h, w, batchsize, min_density, num_patch_per_img)
+    blks_train, blks_valid, valid_paths = datablks(d, h, w, batchsize, min_density, num_patch_per_img)
 
     X_ph = tf.placeholder('float32', [None, d, h, w, 1])
     M_ph = tf.placeholder('float32', [None, d, h, w, 1])
