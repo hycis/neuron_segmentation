@@ -100,35 +100,17 @@ def test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess, threshold):
                         ytrue = y_npy[i:i+d, j:j+h , k:k+w, :]
                         ypred = sess.run(M_valid_s, feed_dict={X_ph:X_npy[np.newaxis, i:i+d, j:j+h , k:k+w, :]})
                         ypred = ypred[0]
-                        # print(ytrue.shape)
-                        # print(ypred.shape)
-
 
                         if i+d == z:
-                            # print('d')
                             ypred = ypred[:d-z_pad,:,:,:]
                             ytrue = ytrue[:d-z_pad,:,:,:]
-                            # print(ytrue.shape)
-                            # print(ypred.shape)
-                            # print()
                         if j+h == y:
-                            # print('h')
                             ypred = ypred[:,:h-y_pad,:,:]
                             ytrue = ytrue[:,:h-y_pad,:,:]
-                            # print(ytrue.shape)
-                            # print(ypred.shape)
-                            # print()
                         if k+w == x:
-                            # print('w')
                             ypred = ypred[:,:,:w-x_pad,:]
                             ytrue = ytrue[:,:,:w-x_pad,:]
-                            # print(ytrue.shape)
-                            # print(ypred.shape)
-                            # print()
-                        # print(ytrue.shape)
-                        # print(ypred.shape)
-                        # print('--------')
-                        # print()
+
 
                         ypred = (ypred > threshold).astype(int)
                         P += ytrue.sum()
@@ -148,7 +130,7 @@ def test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess, threshold):
             print('image precision:', precision)
             print('image recall:', recall)
             print('image f1:', f1)
-            import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
     print('average image precision:', precision_mean / len(valid_paths))
     print('average image recall:', recall_mean / len(valid_paths))
     print('average image f1:', f1_mean / len(valid_paths))
@@ -175,7 +157,7 @@ def train(dt):
     d, h, w = 11, 13, 17
     min_density = 0.1
     num_patch_per_img = 200
-    threshold = 0.5
+    threshold = 0.9
 
     # dt = datetime.now()
     # dt = dt.strftime('%Y%m%d_%H%M_%S%f')
