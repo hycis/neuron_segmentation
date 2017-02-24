@@ -302,7 +302,7 @@ class DataBlks(object):
 
 
                 print('y_npy after shrinked:', y_npy.shape)
-                y_npy /= 100
+                y_npy = y_npy / 100.0
             X_patch, y_patch = self.extract_patches(X_npy, y_npy)
             del X_npy, y_npy
             if len(X_patch) > 0:
