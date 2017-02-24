@@ -68,7 +68,7 @@ def model():
 
 
 
-def test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess):
+def test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess, threshold):
     # X_ph = tf.placeholder('float32', [None, d, h, w, 1])
     # M_ph = tf.placeholder('float32', [None, d, h, w, 1])
     # with tf.Session() as sess:
@@ -277,7 +277,7 @@ def train(dt):
 
             ############################[ Testing ]#############################
             print('full image testing')
-            test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess)
+            test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess, threshold)
             #
             #
             # f1_mean = 0
