@@ -157,7 +157,7 @@ def train(dt):
     epoch_look_back = 3
     percent_decrease = 0.0
     d, h, w = 11, 13, 17
-    min_density = 0.01
+    min_density = 0.05
     num_patch_per_img = 200
     threshold = 0.6
 
@@ -188,12 +188,12 @@ def train(dt):
     M_valid_s = seq.test_fprop(X_ph)
 
     train_cost = tf.reduce_mean((M_ph - M_train_s)**2)
-    train_iou = iou(M_ph, tf.to_float(M_train_s > 0.5))
-    train_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_train_s > 0.5))
+    train_iou = iou(M_ph, tf.to_float(M_train_s > threshold))
+    train_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_train_s > threshold))
     # train_cost = iou(M_ph, M_train_s)
     valid_cost = tf.reduce_mean((M_ph - M_valid_s)**2)
-    valid_iou = iou(M_ph, tf.to_float(M_valid_s > 0.5))
-    valid_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_valid_s > 0.5))
+    valid_iou = iou(M_ph, tf.to_float(M_valid_s > threshold))
+    valid_f1 = tg.cost.image_f1(M_ph, tf.to_float(M_valid_s > threshold))
 
     # data_train = tg.SequentialIterator(X_train, M_train, batchsize=batchsize)
     # data_valid = tg.SequentialIterator(X_valid, M_valid, batchsize=batchsize)
