@@ -269,9 +269,9 @@ def train(dt):
             print('average patch valid f1:', valid_f1_score)
 
             ############################[ Testing ]#############################
-            if epoch % 10 == 0:
-                print('full image testing')
-                test(valid_paths, depth, height, width, M_valid_s, sess, threshold)
+            # if epoch % 10 == 0:
+                # print('full image testing')
+                # test(valid_paths, depth, height, width, M_valid_s, sess, threshold)
 
             if es.continue_learning(valid_error=valid_mse_score):
                 print('epoch', epoch)
