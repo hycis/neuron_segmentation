@@ -147,6 +147,11 @@ def pad_zero(X_npy, x_pad, y_pad, z_pad):
 
 def load_model_test(modelpath):
     threshold = 0.5
+    dname = '/home/malyatha'
+    max_img = 18
+    valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
+                    "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
+                    for num in range(1, max_img)]
     with tf.Session() as sess:
         seq = model()
         ypred_sb = seq.test_fprop(X_ph)
@@ -277,7 +282,7 @@ if __name__ == '__main__':
     depth, height, width = 20, 20, 20
     X_ph = tf.placeholder('float32', [None, depth, height, width, 1])
     M_ph = tf.placeholder('float32', [None, depth, height, width, 1])
-    
+
     load_model_test('./save/20170225_011620/model.tf')
     # import argparse
     # parser = argparse.ArgumentParser()
