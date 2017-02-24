@@ -157,9 +157,9 @@ def train(dt):
     epoch_look_back = 3
     percent_decrease = 0.0
     d, h, w = 11, 13, 17
-    min_density = 0.1
+    min_density = 0.01
     num_patch_per_img = 200
-    threshold = 0.9
+    threshold = 0.6
 
     # dt = datetime.now()
     # dt = dt.strftime('%Y%m%d_%H%M_%S%f')
@@ -207,7 +207,7 @@ def train(dt):
         es = tg.EarlyStopper(max_epoch=max_epoch,
                              epoch_look_back=epoch_look_back,
                              percent_decrease=percent_decrease)
-        for epoch in range(max_epoch):
+        for epoch in range(1, max_epoch):
             print('epoch:', epoch)
             print('..training')
             pbar = ProgressBar(len(blks_train))
@@ -257,8 +257,9 @@ def train(dt):
             print('average patch valid f1:', valid_f1_score)
 
             ############################[ Testing ]#############################
-            print('full image testing')
-            test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess, threshold)
+            if epoch % 10 == 0:
+                print('full image testing')
+                test(valid_paths, d, h, w, X_ph, M_ph, M_valid_s, sess, threshold)
 
             if es.continue_learning(valid_error=valid_mse_score):
                 print('epoch', epoch)
