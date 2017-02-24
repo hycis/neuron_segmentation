@@ -216,8 +216,7 @@ def train(dt):
                         for j in range(0, y, h):
                             for k in range(0, x, w):
                                 ytrue = y_npy[i:i+d, j:j+h , k:k+w, :]
-                                ypred = sess.run(feed_dict={X_ph:X_npy[i:i+d, j:j+h , k:k+w, :],
-                                                            M_ph:ytrue})
+                                ypred = sess.run(M_valid_s, feed_dict={X_ph:X_npy[i:i+d, j:j+h , k:k+w, :]})
 
                                 if i+d == z:
                                     ypred = ypred[:d-z_pad,:,:,:]
