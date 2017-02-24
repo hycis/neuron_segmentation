@@ -233,14 +233,14 @@ def train(dt):
                                 if j+h == y:
                                     print('h')
                                     ypred = ypred[:,:h-y_pad,:,:]
-                                    ytrue = ytrue[:d-z_pad,:,:,:]
+                                    ytrue = ytrue[:,:h-y_pad,:,:]
                                     print(ytrue.shape)
                                     print(ypred.shape)
                                     print()
                                 if k+w == x:
                                     print('w')
                                     ypred = ypred[:,:,:w-x_pad,:]
-                                    ytrue = ytrue[:d-z_pad,:,:,:]
+                                    ytrue = ytrue[:,:,:w-x_pad,:]
                                     print(ytrue.shape)
                                     print(ypred.shape)
                                     print()
