@@ -80,7 +80,7 @@ def test(valid_paths, depth, height, width, M_valid_s, sess, threshold):
             X_npy = np.expand_dims(np.load(Xin), -1) / 255.0
             y_npy = np.expand_dims(np.load(yin), -1) / 100.0
             z, y, x, _ = X_npy.shape
-            z_pad = depth- z % depthif z%depth> 0 else 0
+            z_pad = depth - z % depth if z%depth > 0 else 0
             y_pad = height - y % height if y%height > 0 else 0
             x_pad = width - x % width if x%width > 0 else 0
             print('before pad X shape:', X_npy.shape)
@@ -99,7 +99,7 @@ def test(valid_paths, depth, height, width, M_valid_s, sess, threshold):
                         ypred = sess.run(M_valid_s, feed_dict={X_ph:X_npy[np.newaxis, i:i+depth, j:j+height, k:k+width, :]})
                         ypred = ypred[0]
 
-                        if i+depth== z:
+                        if i+depth == z:
                             ypred = ypred[:depth-z_pad,:,:,:]
                             ytrue = ytrue[:depth-z_pad,:,:,:]
                         if j+height == y:
