@@ -224,16 +224,19 @@ def train(dt):
 
 
                                 if i+d == z:
+                                    print('d')
                                     ypred = ypred[:d-z_pad,:,:,:]
                                     ytrue = ytrue[:d-z_pad,:,:,:]
                                     print(ytrue.shape)
                                     print(ypred.shape, '\n')
                                 if j+h == y:
+                                    print('h')
                                     ypred = ypred[:,:h-y_pad,:,:]
                                     ytrue = ytrue[:d-z_pad,:,:,:]
                                     print(ytrue.shape)
                                     print(ypred.shape, '\n')
                                 if k+w == x:
+                                    print('w')
                                     ypred = ypred[:,:,:w-x_pad,:]
                                     ytrue = ytrue[:d-z_pad,:,:,:]
                                     print(ytrue.shape)
