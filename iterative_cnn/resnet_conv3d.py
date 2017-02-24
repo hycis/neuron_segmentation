@@ -292,17 +292,22 @@ def train(dt):
 if __name__ == '__main__':
     initialize_global_params()
 
-    # load_model_test('./save/20170225_011620/model.tf')
 
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--dt', help='datetime for the initialization of the experiment')
+    parser.add_argument('--train', action='store_true')
+    parser.add_argument('--test', help='test model')
+
 
     args = parser.parse_args()
 
-    if args.dt:
-        train(args.dt)
-    else:
-        dt = datetime.now()
-        dt = dt.strftime('%Y%m%d_%H%M_%S%f')
-        train(dt)
+    if args.train:
+        if args.dt:
+            train(args.dt)
+        else:
+            dt = datetime.now()
+            dt = dt.strftime('%Y%m%d_%H%M_%S%f')
+            train(dt)
+    if args.test:
+        load_model_test('./save/{}/model.tf'.format(args.test))
