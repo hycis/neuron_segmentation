@@ -179,7 +179,7 @@ def initialize_global_params():
 
 def train(dt):
 
-    batchsize = 128
+    batchsize = 32
     learning_rate = 0.005
     max_epoch = 1000
     epoch_look_back = 3
