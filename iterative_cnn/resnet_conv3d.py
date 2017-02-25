@@ -76,7 +76,7 @@ def test(valid_paths, M_valid_s, sess, threshold):
     recall_mean = 0
     for X_path, y_path in valid_paths:
         with open(X_path) as Xin, open(y_path) as yin:
-            print('path:', X_path)
+            print('\npath:', X_path)
             X_npy = np.expand_dims(np.load(Xin), -1) / 255.0
             y_npy = np.expand_dims(np.load(yin), -1) / 100.0
             z, y, x, _ = X_npy.shape
@@ -86,7 +86,7 @@ def test(valid_paths, M_valid_s, sess, threshold):
             print('before pad X shape:', X_npy.shape)
             X_npy = pad_zero(X_npy, x_pad, y_pad, z_pad)
             y_npy = pad_zero(y_npy, x_pad, y_pad, z_pad)
-            print('after pad X shape: {}\n'.format(X_npy.shape))
+            print('after pad X shape: {}'.format(X_npy.shape))
             z, y, x, _ = X_npy.shape
 
             P = 0
