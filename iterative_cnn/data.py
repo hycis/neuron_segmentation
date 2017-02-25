@@ -398,6 +398,28 @@ def rotations6(polycube):
             yield polycube
 
 
+def calculate_dimension():
+
+    dname = '/home/malyatha'
+    max_img = 18
+    # max_img = 4
+    train_paths = [("{dir}/train_npy/{num}.npy".format(dir=dname, num=num),
+                    "{dir}/train_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
+                    for num in range(1, max_img)]
+    valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
+                    "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
+                    for num in range(1, max_img)]
+    print('train')
+    for X, y in train_paths:
+        with open(X) as fin:
+            npy = np.load(X)
+            print(npy.shape)
+    print('valid')
+    for X, y in valid_paths:
+        with open(X) as fin:
+            npy = np.load(X)
+            print(npy.shape)
+
 
 
 def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
@@ -421,8 +443,9 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
 
 
 if __name__ == '__main__':
+    calculate_dimension()
     # data = Iris()
     # data = Skin(train_valid=[5,1], shuffle=True, batchsize=32)
     # data.make_data()
     # import pdb; pdb.set_trace()
-    print(list(rotations12(np.random.rand(10,10,10))))
+    # print(list(rotations12(np.random.rand(10,10,10))))
