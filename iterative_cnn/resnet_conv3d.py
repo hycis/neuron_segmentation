@@ -76,7 +76,7 @@ def test(valid_paths, M_valid_s, sess, threshold):
     recall_mean = 0
     for X_path, y_path in valid_paths:
         with open(X_path) as Xin, open(y_path) as yin:
-            print('\npath:', X_path)
+            print('\npath:{}'.format(X_path))
             X_npy = np.expand_dims(np.load(Xin), -1) / 255.0
             y_npy = np.expand_dims(np.load(yin), -1) / 100.0
             z, y, x, _ = X_npy.shape
