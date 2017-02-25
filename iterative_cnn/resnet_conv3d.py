@@ -161,7 +161,9 @@ def load_model_test(modelpath):
         saver = tf.train.Saver()
         saver.restore(sess, modelpath)
         for t in range(1, 10):
+            # print('threshold', threshold)
             threshold = t * 0.1
+            print('threshold', threshold)
             dname = '/home/malyatha'
             max_img = 2
             valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
