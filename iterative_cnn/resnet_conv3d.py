@@ -155,8 +155,9 @@ def pad_zero(X_npy, x_pad, y_pad, z_pad):
 
 def load_model_test(modelpath):
 
-    for threshold in range(0.1, 0.9, 0.1):
-    # threshold = 0.7
+
+    for t in range(1, 10):
+        threshold = t * 0.1
         dname = '/home/malyatha'
         max_img = 2
         valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
