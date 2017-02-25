@@ -154,18 +154,20 @@ def pad_zero(X_npy, x_pad, y_pad, z_pad):
 
 
 def load_model_test(modelpath):
-    threshold = 0.7
-    dname = '/home/malyatha'
-    max_img = 18
-    valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
-                    "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
-                    for num in range(1, max_img)]
-    with tf.Session() as sess:
-        seq = model()
-        ypred_sb = seq.test_fprop(X_ph)
-        saver = tf.train.Saver()
-        saver.restore(sess, modelpath)
-        test(valid_paths, ypred_sb, sess, threshold)
+
+    for threshold in range(0.1, 0.9, 0.1):
+    # threshold = 0.7
+        dname = '/home/malyatha'
+        max_img = 2
+        valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
+                        "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
+                        for num in range(1, max_img)]
+        with tf.Session() as sess:
+            seq = model()
+            ypred_sb = seq.test_fprop(X_ph)
+            saver = tf.train.Saver()
+            saver.restore(sess, modelpath)
+            test(valid_paths, ypred_sb, sess, threshold)
 
 def initialize_global_params():
     global X_ph, M_ph, depth, height, width
@@ -298,6 +300,7 @@ if __name__ == '__main__':
     parser.add_argument('--dt', help='datetime for the initialization of the experiment')
     parser.add_argument('--train', action='store_true')
     parser.add_argument('--test', help='test model')
+    # parser.add_argument('--th', help='threshold')
 
 
     args = parser.parse_args()
