@@ -173,7 +173,7 @@ def load_model_test(modelpath):
 
 def initialize_global_params():
     global X_ph, M_ph, depth, height, width
-    depth, height, width = 100, 100, 29
+    depth, height, width = 100, 100, 28
     X_ph = tf.placeholder('float32', [None, depth, height, width, 1])
     M_ph = tf.placeholder('float32', [None, depth, height, width, 1])
 
@@ -186,7 +186,7 @@ def train(dt):
     percent_decrease = 0.0
 
 
-    min_density = 0.
+    min_density = 0.01
     num_patch_per_img = 200
     threshold = 0.6
 
