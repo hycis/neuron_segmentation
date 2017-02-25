@@ -160,16 +160,16 @@ def load_model_test(modelpath):
         ypred_sb = seq.test_fprop(X_ph)
         saver = tf.train.Saver()
         saver.restore(sess, modelpath)
-        for t in range(1, 10):
+        # for t in range(1, 10):
             # print('threshold', threshold)
-            threshold = t * 0.1
-            print('threshold', threshold)
-            dname = '/home/malyatha'
-            max_img = 2
-            valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
-                            "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
-                            for num in range(1, max_img)]
-            test(valid_paths, ypred_sb, sess, threshold)
+        threshold = 0.7
+        print('threshold', threshold)
+        dname = '/home/malyatha'
+        max_img = 2
+        valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
+                        "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
+                        for num in range(1, max_img)]
+        test(valid_paths, ypred_sb, sess, threshold)
 
 def initialize_global_params():
     global X_ph, M_ph, depth, height, width
