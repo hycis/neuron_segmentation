@@ -165,7 +165,7 @@ def load_model_test(modelpath):
         threshold = 0.7
         print('threshold', threshold)
         dname = '/home/malyatha'
-        max_img = 2
+        max_img = 18
         valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
                         "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
                         for num in range(1, max_img)]
