@@ -186,7 +186,7 @@ def train(dt):
     percent_decrease = 0.0
 
 
-    min_density = 0.01
+    min_density = 0.
     num_patch_per_img = 200
     threshold = 0.6
 
