@@ -155,19 +155,18 @@ def pad_zero(X_npy, x_pad, y_pad, z_pad):
 
 def load_model_test(modelpath):
 
-
-    for t in range(1, 10):
-        threshold = t * 0.1
-        dname = '/home/malyatha'
-        max_img = 2
-        valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
-                        "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
-                        for num in range(1, max_img)]
-        with tf.Session() as sess:
-            seq = model()
-            ypred_sb = seq.test_fprop(X_ph)
-            saver = tf.train.Saver()
-            saver.restore(sess, modelpath)
+    with tf.Session() as sess:
+        seq = model()
+        ypred_sb = seq.test_fprop(X_ph)
+        saver = tf.train.Saver()
+        saver.restore(sess, modelpath)
+        for t in range(1, 10):
+            threshold = t * 0.1
+            dname = '/home/malyatha'
+            max_img = 2
+            valid_paths = [("{dir}/test_npy/{num}.npy".format(dir=dname, num=num),
+                            "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
+                            for num in range(1, max_img)]
             test(valid_paths, ypred_sb, sess, threshold)
 
 def initialize_global_params():
