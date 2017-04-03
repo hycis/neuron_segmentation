@@ -454,9 +454,26 @@ def fullimage():
         print(path)
         with open(path) as fin:
             X = np.load(fin)
+
             shapes.append(X.shape)
             print(X.shape)
-    print(np.max(shapes, axis=0))
+    max_shape = np.max(shapes, axis=0)
+    print('max shape', max_shape)
+    max_d, max_h, max_w = list(max_shape)
+
+    X_pads = []
+    for path, ypath in train_paths + valid_paths:
+        print(path)
+        with open(path) as fin:
+            X = np.load(fin)
+            d, h, w = X.shape
+            print('before pad:', X.shape)
+            X_pad = np.lib.pad(X, ((0, max_d-d),(0, max_h-h),(0, max_w-w)), 'constant', constant_values=0)
+            print('after pad:', X_pad.shape)
+            print()
+
+
+    # y_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
 
     # blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
     # blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
