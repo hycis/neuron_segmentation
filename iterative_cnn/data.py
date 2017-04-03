@@ -449,7 +449,7 @@ def fullimage():
                     "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
                     for num in range(1, max_img)]
 
-    for path in train_paths + valid_paths:
+    for path, ypath in train_paths + valid_paths:
         print(path)
         with open(path) as fin:
             X = np.load(fin)
