@@ -440,7 +440,7 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
 
 def fullimage():
     dname = '/home/malyatha'
-    # max_img = 18
+    max_img = 18
     # max_img = 4
     train_paths = [("{dir}/train_npy/{num}.npy".format(dir=dname, num=num),
                     "{dir}/train_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
