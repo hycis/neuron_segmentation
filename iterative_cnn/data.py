@@ -468,7 +468,7 @@ def padX(paths, max_d, max_h, max_w):
 def fullimage():
     dname = '/home/malyatha'
     # max_img = 18
-    max_img = 4
+    max_img = 2
     train_paths = [("{dir}/train_npy/{num}.npy".format(dir=dname, num=num),
                     "{dir}/train_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
                     for num in range(1, max_img)]
