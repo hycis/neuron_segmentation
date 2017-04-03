@@ -438,6 +438,33 @@ def datablks(d, h, w, batchsize, min_density, num_patch_per_img=1000):
     return blk_train.make_data(), blk_valid.make_data(), valid_paths
 
 
+
+
+def padX(paths, max_d, max_h, max_w):
+    X_pads = []
+    y_pads = []
+    shapes = []
+    for Xpath, ypath in paths:
+        print(path)
+        with open(Xpath) as Xin, open(ypath) as yin:
+            X = np.load(Xin)
+            y = np.load(yin)
+            assert list(X.shape) == list(y.shape)
+            d, h, w = X.shape
+            shapes.append(X.shape)
+            print('before pad:', X.shape)
+            X_pad = np.lib.pad(X, ((0, max_d-d),(0, max_h-h),(0, max_w-w)), 'constant', constant_values=0)
+            X_pads.append(np.expand_dims(X_pad, -1))
+            # X_pads += rotations6(X_pad)
+
+            y_pad = np.lib.pad(y, ((0, max_d-d),(0, max_h-h),(0, max_w-w)), 'constant', constant_values=0)
+            y_pads.append(np.expand_dims(y_pad, -1))
+            print('after pad:', X_pad.shape)
+            print('\n')
+    return tg.SequentialIterator(X_pads, y_pads, shapes, batchsize=1)
+
+
+
 def fullimage():
     dname = '/home/malyatha'
     max_img = 18
@@ -454,32 +481,17 @@ def fullimage():
         print(path)
         with open(path) as fin:
             X = np.load(fin)
-
             shapes.append(X.shape)
             print(X.shape)
     max_shape = np.max(shapes, axis=0)
     print('max shape', max_shape)
     max_d, max_h, max_w = list(max_shape)
 
-    X_pads = []
-    for path, ypath in train_paths + valid_paths:
-        print(path)
-        with open(path) as fin:
-            X = np.load(fin)
-            d, h, w = X.shape
-            print('before pad:', X.shape)
-            X_pad = np.lib.pad(X, ((0, max_d-d),(0, max_h-h),(0, max_w-w)), 'constant', constant_values=0)
-            print('after pad:', X_pad.shape)
-            print()
+    # for path, ypath in train_paths:
 
-
-    # y_npy[z:z+self.depth, y:y+self.height, x:x+self.width, :]
-
-    # blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
-    # blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
-    # return blk_train.make_data(), blk_valid.make_data(), valid_paths
-
-
+    iter_train = padX(train_paths, max_d, max_h, max_w)
+    iter_valid = padX(valid_paths, max_d, max_h, max_w)
+    return iter_train, iter_valid, max_shape
 
 
 
