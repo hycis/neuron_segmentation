@@ -449,12 +449,14 @@ def fullimage():
                     "{dir}/test_gt_npy/{num}_gt.npy".format(dir=dname, num=num))
                     for num in range(1, max_img)]
 
+    shapes = []
     for path, ypath in train_paths + valid_paths:
         print(path)
         with open(path) as fin:
             X = np.load(fin)
+            shapes.append(X.shape)
             print(X.shape)
-        print()
+    print(np.max(shapes, axis=0))
 
     # blk_train = DataBlks(train_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
     # blk_valid = DataBlks(valid_paths, d, h, w, batchsize, min_density=min_density, num_patch_per_img=num_patch_per_img, rotate=False)
