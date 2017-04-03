@@ -63,7 +63,7 @@ def iou(ytrue, ypred):
 
 def model():
     model = tg.Sequential()
-    model.add(ResNet(num_blocks=5))
+    model.add(ResNet(num_blocks=1))
     model.add(Sigmoid())
     return model
 
