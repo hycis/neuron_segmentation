@@ -232,7 +232,7 @@ def train(dt):
         for epoch in range(1, max_epoch):
             print('epoch:', epoch)
             print('..training')
-            pbar = ProgressBar(len(blks_train))
+            pbar = ProgressBar(len(iter_train))
             n_exp = 0
             train_mse_score = 0
             train_iou_score = 0
@@ -257,7 +257,7 @@ def train(dt):
 
 
             print('..validating')
-            pbar = ProgressBar(len(blks_valid))
+            pbar = ProgressBar(len(valid_iter))
             n_exp = 0
             valid_mse_score = 0
             # for data_valid in blks_valid:
