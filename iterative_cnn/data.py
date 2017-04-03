@@ -445,7 +445,7 @@ def padX(paths, max_d, max_h, max_w):
     y_pads = []
     shapes = []
     for Xpath, ypath in paths:
-        print(path)
+        print(Xpath)
         with open(Xpath) as Xin, open(ypath) as yin:
             X = np.load(Xin)
             y = np.load(yin)
