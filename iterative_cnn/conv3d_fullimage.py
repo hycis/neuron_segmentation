@@ -232,14 +232,14 @@ def train(dt):
         for epoch in range(1, max_epoch):
             print('epoch:', epoch)
             print('..training')
-            pbar = ProgressBar(len(iter_train))
+            pbar = ProgressBar(len(train_iter))
             n_exp = 0
             train_mse_score = 0
             train_iou_score = 0
             train_f1_score = 0
             # for data_train in blks_train:
             # for X_batch, M_batch in blks_train:
-            for X_batch, M_batch, shapes in iter_train:
+            for X_batch, M_batch, shapes in train_iter:
                 feed_dict={X_ph:X_batch, M_ph:M_batch}
                 # import pdb; pdb.set_trace()
                 sess.run(optimizer, feed_dict=feed_dict)
